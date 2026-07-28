@@ -1,6 +1,6 @@
 # basis_transcoder build
 
-`basis_transcoder.js` and `../basis_transcoder.wasm` are built from
+`basis_transcoder.js` is built from
 [basis_universal](https://github.com/BinomialLLC/basis_universal) `v1_15_update2`
 with Emscripten 2.0.17, plus one flag that upstream does not currently set:
 
@@ -16,6 +16,10 @@ WebAssembly compilation but not `new Function`. With the flag, `embind` emits it
 closure-based invoker fallback instead — the same marshaling, without runtime code
 generation.
 
+The flag affects only the generated JavaScript. Building with and without it emits an
+identical `.wasm`, so `../basis_transcoder.wasm` is **not** part of this change and must
+be left as-is — replacing it would be an unrelated substitution of the compiled module.
+
 Upstream has been asked to set this flag by default. See
 https://github.com/CesiumGS/cesium/issues/13617.
 
@@ -23,9 +27,9 @@ https://github.com/CesiumGS/cesium/issues/13617.
 
 These files have never been upstream's published artifact. basis_universal checks a
 prebuilt `webgl/transcoder/build/basis_transcoder.js` into its own repository, and the
-copy vendored here has always differed from it — the previously vendored JavaScript was
-62,288 bytes against upstream's 62,337, with different `.wasm` binaries as well. The
-files were evidently built from source when KTX2 support was added in 2021.
+copy vendored here has always differed from it — the vendored JavaScript was 62,288
+bytes against upstream's 62,337, with a different `.wasm` as well. The files were
+evidently built from source when KTX2 support was added in 2021.
 
 What the previously vendored JavaScript *did* match, byte for byte, is a from-source
 build at `v1_15_update2` under Emscripten 2.0.17 with upstream's link flags unmodified.
@@ -33,6 +37,10 @@ That is how the version and toolchain were identified.
 
 So this change does not introduce a divergence from upstream; it changes the build
 configuration of an artifact already built here, by one flag.
+
+Note that a from-source rebuild does *not* reproduce the vendored `.wasm` — it differs by
+38 bytes, so Cesium's copy came from a slightly different source revision than the tag.
+That is another reason to leave the compiled module alone.
 
 ## Reproducing
 
@@ -52,8 +60,7 @@ docker run --rm -v "$PWD/../../..":/src -w /src/webgl/transcoder/build \
   'emcmake cmake -DCMAKE_EXE_LINKER_FLAGS="-s DYNAMIC_EXECUTION=0" .. && make -j2'
 ```
 
-Then copy `basis_transcoder.js` here and `basis_transcoder.wasm` to
-`packages/engine/Source/ThirdParty/`.
+Then copy `basis_transcoder.js` here. Do not copy the `.wasm`; see above.
 
 Verify the result contains no runtime code generation:
 
