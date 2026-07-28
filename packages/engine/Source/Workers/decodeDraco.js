@@ -6,7 +6,7 @@ import defined from "../Core/defined.js";
 import IndexDatatype from "../Core/IndexDatatype.js";
 import RuntimeError from "../Core/RuntimeError.js";
 import createTaskProcessorWorker from "./createTaskProcessorWorker.js";
-import fetchWebAssemblyBinary from "./fetchWebAssemblyBinary.js";
+import fetchWebAssemblyBinary from "../Core/fetchWebAssemblyBinary.js";
 import dracoModule from "draco3d/draco_decoder_nodejs.js";
 
 let draco;

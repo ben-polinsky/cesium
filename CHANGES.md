@@ -11,7 +11,7 @@
 
 #### Breaking Changes :mega:
 
-- WebAssembly binaries are now requested inside the worker that compiles them, rather than being fetched on the main thread and posted to the worker. Together with moving meshopt and SPZ decoding into workers, this keeps WebAssembly off the document. The configuration posted by `TaskProcessor.initWebAssemblyModule` no longer contains `wasmBinary`; workers should load the bytes from `wasmBinaryFile` with the new `fetchWebAssemblyBinary` helper. [#13617](https://github.com/CesiumGS/cesium/issues/13617)
+- WebAssembly binaries are now requested inside the worker that compiles them, rather than being fetched on the main thread and posted to the worker. Together with moving meshopt and SPZ decoding into workers, this keeps WebAssembly off the document. The configuration posted by `TaskProcessor.initWebAssemblyModule` no longer contains `wasmBinary`; workers should load the bytes from `wasmBinaryFile` with the new `fetchWebAssemblyBinary` helper, which is exported from `@cesium/engine` alongside a `WebAssemblyConfig` type. [#13617](https://github.com/CesiumGS/cesium/issues/13617)
 
 #### Fixes :wrench:
 

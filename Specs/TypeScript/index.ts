@@ -34,6 +34,7 @@ import {
   EllipsoidOutlineGeometry,
   EllipsoidTerrainProvider,
   EntityCollection,
+  fetchWebAssemblyBinary,
   FrustumGeometry,
   FrustumOutlineGeometry,
   GeoJsonDataSource,
@@ -98,6 +99,7 @@ import {
   WallGeometry,
   WallOutlineGeometry,
   WebMapServiceImageryProvider,
+  WebAssemblyConfig,
   WebMapTileServiceImageryProvider,
   writeTextToCanvas,
 } from "cesium";
@@ -401,3 +403,16 @@ pos = undefined;
 if (defined(pos)) {
   consumeDefined(pos);
 }
+
+// Verify the worker-side WebAssembly helper is usable from TypeScript, since
+// TaskProcessor.initWebAssemblyModule no longer posts the binary itself.
+const webAssemblyConfig: WebAssemblyConfig = {
+  wasmBinaryFile: "ThirdParty/example.wasm",
+  withCredentials: false,
+};
+fetchWebAssemblyBinary(webAssemblyConfig).then(
+  (resolved: WebAssemblyConfig) => {
+    const bytes: ArrayBuffer | undefined = resolved.wasmBinary;
+    return bytes;
+  },
+);
