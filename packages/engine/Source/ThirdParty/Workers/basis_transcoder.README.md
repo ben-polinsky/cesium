@@ -16,15 +16,30 @@ WebAssembly compilation but not `new Function`. With the flag, `embind` emits it
 closure-based invoker fallback instead — the same marshaling, without runtime code
 generation.
 
-Upstream has been asked to set this flag so this build can go back to matching a
-published release. See https://github.com/CesiumGS/cesium/issues/13617.
+Upstream has been asked to set this flag by default. See
+https://github.com/CesiumGS/cesium/issues/13617.
+
+## Relationship to upstream
+
+These files have never been upstream's published artifact. basis_universal checks a
+prebuilt `webgl/transcoder/build/basis_transcoder.js` into its own repository, and the
+copy vendored here has always differed from it — the previously vendored JavaScript was
+62,288 bytes against upstream's 62,337, with different `.wasm` binaries as well. The
+files were evidently built from source when KTX2 support was added in 2021.
+
+What the previously vendored JavaScript *did* match, byte for byte, is a from-source
+build at `v1_15_update2` under Emscripten 2.0.17 with upstream's link flags unmodified.
+That is how the version and toolchain were identified.
+
+So this change does not introduce a divergence from upstream; it changes the build
+configuration of an artifact already built here, by one flag.
 
 ## Reproducing
 
-The pinned toolchain matters: Emscripten 2.0.17 with the unmodified upstream link
-flags reproduces the previously vendored `basis_transcoder.js` byte for byte, which
-is how this version was identified. Adjacent Emscripten patch releases do not — 2.0.16
-differs by one statement in `_emscripten_resize_heap`.
+The pinned toolchain matters. Adjacent Emscripten patch releases do not reproduce the
+same output — 2.0.16 differs by one statement in `_emscripten_resize_heap`. Verify any
+toolchain change by first building *without* `DYNAMIC_EXECUTION=0` and confirming the
+result matches the byte count above before trusting a patched build.
 
 ```sh
 git clone --branch v1_15_update2 --depth 1 \
