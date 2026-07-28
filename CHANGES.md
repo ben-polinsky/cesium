@@ -9,6 +9,10 @@
 - Added `Texture.defaultColor` static property to allow customizing the default placeholder texture color. [#13597](https://github.com/CesiumGS/cesium/pull/13597)
 - Added support for draping clamped vector tile polylines onto terrain, with screen-space-constant line width and per-feature styling via `Cesium3DTileStyle`. [#13577](https://github.com/CesiumGS/cesium/pull/13577)
 
+#### Breaking Changes :mega:
+
+- WebAssembly binaries are now requested inside the worker that compiles them, rather than being fetched on the main thread and posted to the worker. Together with moving meshopt and SPZ decoding into workers, this keeps WebAssembly off the document so applications can scope `wasm-unsafe-eval` to worker responses. The configuration posted by `TaskProcessor.initWebAssemblyModule` no longer contains `wasmBinary`; workers should load the bytes from `wasmBinaryFile` with the new `fetchWebAssemblyBinary` helper. [#13617](https://github.com/CesiumGS/cesium/issues/13617)
+
 #### Fixes :wrench:
 
 - Fixed a bug in `GeocoderViewModel` where a duplicate `destroy` method silently overwrote the first, preventing `_suggestionSubscription` from being disposed on destroy. [#13580](https://github.com/CesiumGS/cesium/pull/13580)
