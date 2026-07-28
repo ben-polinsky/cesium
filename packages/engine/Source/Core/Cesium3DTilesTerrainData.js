@@ -324,7 +324,7 @@ Cesium3DTilesTerrainData.prototype.createMesh = function (options) {
 };
 
 /**
- * Creates a {@link TerrainMesh} from this terrain data synchronously.
+ * Creates a {@link TerrainMesh} from this terrain data without task throttling.
  *
  * @private
  *
@@ -338,47 +338,9 @@ Cesium3DTilesTerrainData.prototype.createMesh = function (options) {
  * @returns {Promise.<TerrainMesh>} A promise for the terrain mesh.
  */
 Cesium3DTilesTerrainData.prototype._createMeshSync = function (options) {
-  options = options ?? Frozen.EMPTY_OBJECT;
-
-  //>>includeStart('debug', pragmas.debug)
-  Check.typeOf.object("options.tilingScheme", options.tilingScheme);
-  Check.typeOf.number("options.x", options.x);
-  Check.typeOf.number("options.y", options.y);
-  Check.typeOf.number("options.level", options.level);
-  //>>includeEnd('debug');
-
-  const tilingScheme = options.tilingScheme;
-  const ellipsoid = tilingScheme.ellipsoid;
-  const x = options.x;
-  const y = options.y;
-  const level = options.level;
-  const rectangle = tilingScheme.tileXYToRectangle(
-    x,
-    y,
-    level,
-    new Rectangle(),
-  );
-
-  const meshPromise = Cesium3DTilesTerrainGeometryProcessor.createMesh({
-    ellipsoid: ellipsoid,
-    rectangle: rectangle,
-    hasVertexNormals: this._hasVertexNormals,
-    hasWebMercatorT: this._hasWebMercatorT,
-    gltf: this._gltf,
-    minimumHeight: this._minimumHeight,
-    maximumHeight: this._maximumHeight,
-    boundingSphere: this._boundingSphere,
-    orientedBoundingBox: this._orientedBoundingBox,
-    horizonOcclusionPoint: this._horizonOcclusionPoint,
-    skirtHeight: this._skirtHeight,
-    exaggeration: options.exaggeration,
-    exaggerationRelativeHeight: options.exaggerationRelativeHeight,
-  });
-
-  const that = this;
-  return Promise.resolve(meshPromise).then(function (mesh) {
-    that._mesh = mesh;
-    return Promise.resolve(mesh);
+  return this.createMesh({
+    ...options,
+    throttle: false,
   });
 };
 
