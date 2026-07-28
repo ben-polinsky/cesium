@@ -2,9 +2,11 @@ import Check from "../Core/Check.js";
 import Frozen from "../Core/Frozen.js";
 import defined from "../Core/defined.js";
 import RuntimeError from "../Core/RuntimeError.js";
+import TaskProcessor from "../Core/TaskProcessor.js";
 import ResourceLoader from "./ResourceLoader.js";
 import ResourceLoaderState from "./ResourceLoaderState.js";
-import { loadSpz } from "@spz-loader/core";
+
+const decodeSpzTaskProcessor = new TaskProcessor("decodeSpz");
 
 // Cumulative number of SH coefficient floats per splat per channel for each
 // degree. Degree 0 has no extra SH data (base color is stored separately in
@@ -234,9 +236,13 @@ class GltfSpzLoader extends ResourceLoader {
       }
     }
 
-    const decodePromise = loadSpz(this._bufferViewTypedArray, {
-      unpackOptions: { coordinateSystem: "UNSPECIFIED" },
-    });
+    // Buffer views can be shared by cached resources. Transfer a private copy
+    // so decoding does not detach the cached source.
+    const spzData = new Uint8Array(this._bufferViewTypedArray);
+    const decodePromise = decodeSpzTaskProcessor.scheduleTask(
+      { spzData: spzData },
+      [spzData.buffer],
+    );
 
     if (!defined(decodePromise)) {
       return false;
