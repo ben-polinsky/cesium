@@ -1,12 +1,15 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { access, readFile, stat } from "node:fs/promises";
+import { access, readFile, rm, stat } from "node:fs/promises";
 import path from "node:path";
 
+// The candidate is the PR head and the baseline is the commit the PR is
+// actually based on. Using fork-main instead of the merge base would fold
+// unrelated model/rendering changes into the measured delta.
 export const defaultCandidateRef =
   "7e620929194becfe04c5ad019c030159cfe0aa34";
 export const defaultBaselineRef =
-  "eab72bb06d465fadc25b59ab6dcd65b7645dab99";
+  "6d5d8b1f0725b6f831b336463f4b11c98023427b";
 export const scenarios = Object.freeze([
   {
     id: "meshopt-model-unit-square",
@@ -42,12 +45,14 @@ export function parseConfirmatoryArguments(argumentsList) {
     output: "Build/Performance/Decompression/confirmatory.json",
     port: 8091,
     headed: false,
+    skipBuild: false,
     help: false,
   };
   for (let index = 0; index < argumentsList.length; index++) {
     const argument = argumentsList[index];
     if (argument === "--help") options.help = true;
     else if (argument === "--headed") options.headed = true;
+    else if (argument === "--skip-build") options.skipBuild = true;
     else if (argument === "--candidate" || argument.startsWith("--candidate=")) {
       options.candidate = value(argumentsList, index, "--candidate");
       if (argument === "--candidate") index++;
@@ -77,10 +82,16 @@ export function parseConfirmatoryArguments(argumentsList) {
   return options;
 }
 
+// Alternate AB/BA every block. Splitting the run into a candidate-first half
+// and a baseline-first half balances the totals but confounds variant order
+// with elapsed time, browser warming, and thermal drift.
 export function pairedOrders() {
   return Array.from({ length: 12 }, (_, block) => ({
     block,
-    order: block < 6 ? ["candidate", "baseline"] : ["baseline", "candidate"],
+    order:
+      block % 2 === 0
+        ? ["candidate", "baseline"]
+        : ["baseline", "candidate"],
   }));
 }
 
@@ -88,6 +99,59 @@ function git(root, argumentsList) {
   return execFileSync("git", ["-C", root, ...argumentsList], { encoding: "utf8" }).trim();
 }
 
+export const requiredArtifacts = Object.freeze([
+  "packages/engine/Build/Minified/index.js",
+]);
+
+// `gulp build --minify --workspace @cesium/engine` regenerates every artifact
+// the confirmatory page serves: Build/Minified/index.js, Build/Workers, and
+// Build/ThirdParty/Workers.
+export const releaseBuild = Object.freeze({
+  command: "npx",
+  args: Object.freeze([
+    "gulp",
+    "build",
+    "--minify",
+    "--workspace",
+    "@cesium/engine",
+  ]),
+  display: "npx gulp build --minify --workspace @cesium/engine",
+  removedBeforeBuild: Object.freeze(["packages/engine/Build"]),
+});
+
+// The Build directory is gitignored, so a clean worktree does not prove the
+// build output came from the current HEAD. Remove it and rebuild.
+export async function buildVariant(root) {
+  const resolved = path.resolve(root);
+  for (const relative of releaseBuild.removedBeforeBuild) {
+    await rm(path.join(resolved, relative), { force: true, recursive: true });
+  }
+  execFileSync(releaseBuild.command, [...releaseBuild.args], {
+    cwd: resolved,
+    stdio: "inherit",
+  });
+  return {
+    command: releaseBuild.display,
+    removedBeforeBuild: [...releaseBuild.removedBeforeBuild],
+    freshlyBuilt: true,
+  };
+}
+
+export async function requireArtifacts(root, files = requiredArtifacts) {
+  const resolved = path.resolve(root);
+  await Promise.all(
+    files.map(async (file) => {
+      try {
+        await access(path.join(resolved, file));
+      } catch {
+        throw new Error(`${resolved} is missing built artifact ${file}`);
+      }
+    }),
+  );
+}
+
+// Checks worktree identity only. Built artifacts are verified separately, after
+// the rebuild, because the rebuild deletes them first.
 export async function verifyVariant(root, expectedRef) {
   const resolved = path.resolve(root);
   if (git(resolved, ["status", "--porcelain"]).length !== 0) {
@@ -98,8 +162,6 @@ export async function verifyVariant(root, expectedRef) {
   if (commit !== expectedCommit) {
     throw new Error(`${resolved} is at ${commit}, not expected ${expectedRef} (${expectedCommit})`);
   }
-  const required = ["packages/engine/Build/Minified/index.js"];
-  await Promise.all(required.map((file) => access(path.join(resolved, file))));
   return { root: resolved, commit, expectedRef, dirty: false };
 }
 

@@ -13,17 +13,67 @@ benchmark-only TaskProcessor lifecycle hook.
 npm run benchmark-decompression:confirmatory -- \
   --candidate /Users/benpolinsky/source/cesium \
   --baseline /path/to/clean-baseline
+
+npm run benchmark-decompression:confirmatory-summary -- \
+  Build/Performance/Decompression/confirmatory.json
 ```
 
-It requires clean worktrees at the supplied candidate/base refs (defaults are
-the audited refs) and each release ESM entry point, and runs only
-`meshopt-model-unit-square`, `meshopt-model-meshopt-cube-test`, and
-`spz-tiles-tower`. It records 12 fixed paired blocks: six candidate-first and
-six baseline-first. Hashing is completed before browser timing starts.
-SPZ samples observe the identical 1.5-second window beginning immediately
-before the public call; the report has clipped long-task entries and
-within-window frame gaps, never a total-long-task-duration claim. Meshopt
-results intentionally make no responsiveness claim.
+### What it measures
+
+**First compressed-asset readiness after Cesium has loaded.** The engine ESM
+import completes before the timer starts. The candidate then fetches its
+separate decoder worker during first asset use, while the baseline's decoder
+code already arrived inside the larger main bundle. This is deliberately
+_not_ total page cold-start: it does not credit the candidate's smaller
+initial engine bundle as a possible offsetting benefit. Do not report these
+numbers as cold-start or total page load.
+
+### Variant identity and freshness
+
+The default refs are the candidate (PR head) and the commit the PR is
+actually based on — its merge base, not fork main. Comparing against fork
+main folds every unrelated change between the two into the delta, including
+model and rendering pipeline work, and the result is then not a causal
+measurement of the PR.
+
+Both worktrees must be clean and checked out at their expected refs. Because
+`packages/engine/Build` is gitignored, a clean worktree does not prove the
+build output came from the current `HEAD`, so the runner deletes
+`packages/engine/Build` in each worktree and rebuilds it with
+`npx gulp build --minify --workspace @cesium/engine` before any timing. The
+command, the removed paths, and whether the build was actually fresh are
+recorded under `build` in the result. `--skip-build` reuses existing output
+and records `freshlyBuilt: false`; results produced that way are not
+confirmatory evidence.
+
+### Run order
+
+It runs 12 paired blocks over `meshopt-model-unit-square`,
+`meshopt-model-meshopt-cube-test`, and `spz-tiles-tower`. Variant order
+alternates every block (`candidate`-first on even blocks, `baseline`-first on
+odd blocks). Running six candidate-first blocks and then six baseline-first
+blocks balances the totals but confounds order with elapsed time, browser
+warming, and thermal drift; alternating removes that. `blockOrders` records
+the realized sequence and `confirmatory-summary.mjs` reports each delta split
+by order so any residual drift is visible.
+
+### Responsiveness window
+
+SPZ samples observe an identical 1.5-second window beginning immediately
+before the public call. The frame monitor seeds its previous timestamp with
+that start, so the interval from the public call to the first
+`requestAnimationFrame` callback is measured rather than discarded, and it
+records any gap that _begins_ inside the window even when its callback lands
+just past the boundary. Boundary-crossing gaps are reported in full;
+long-task entries are clipped to the window. Because a `requestAnimationFrame`
+callback carries its frame's start time, the first callback can predate the
+public call when a frame was already in flight; that seeded sample is clamped
+at zero rather than recorded as a negative gap. Consequently the recorded gaps
+can sum to slightly more than 1500 ms. The report contains clipped long-task
+entries and raw frame gaps, never a total-long-task-duration claim. Meshopt
+scenarios intentionally make no responsiveness claim.
+
+Hashing is completed before browser timing starts.
 
 The remainder of this document describes the older combined-build exploratory
 path. Its warm/cache and TaskProcessor-hook experiments are not confirmatory

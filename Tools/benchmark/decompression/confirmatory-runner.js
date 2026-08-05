@@ -31,7 +31,9 @@ async function waitFor(w, predicate) {
 function monitor(start) {
   const end = start + 1500;
   const gaps = [];
-  let previous;
+  // Seed with `start` so the interval between the public call and the first
+  // animation-frame callback is measured rather than discarded.
+  let previous = start;
   let stopped = false;
   const collectLongTasks = (entries) => {
     for (const entry of entries) {
@@ -54,9 +56,14 @@ function monitor(start) {
   } catch {
     /* browser does not support longtask */
   }
+  // A gap is recorded whenever it *begins* inside the window, so a stall that
+  // starts before `end` and whose callback lands after it is still counted.
+  // Durations are never clipped; a boundary-crossing gap is reported in full.
+  // The clamp only ever applies to the seeded first sample: a rAF callback
+  // carries its frame's start time, so the first one can predate `start` when
+  // a frame was already in flight. That is zero waiting, not a negative gap.
   function tick(now) {
-    if (previous !== undefined && previous >= start && now <= end)
-      gaps.push(now - previous);
+    if (previous < end) gaps.push(Math.max(0, now - previous));
     previous = now;
     if (!stopped && now < end) requestAnimationFrame(tick);
   }
