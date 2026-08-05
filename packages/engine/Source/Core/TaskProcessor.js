@@ -9,8 +9,14 @@ import isCrossOriginUrl from "./isCrossOriginUrl.js";
 import RuntimeError from "./RuntimeError.js";
 import TrustedServers from "./TrustedServers.js";
 
-function canTransferArrayBuffer() {
+function canTransferArrayBuffer(processor) {
   if (!defined(TaskProcessor._canTransferArrayBuffer)) {
+    const benchmarkTiming =
+      defined(processor) &&
+      typeof TaskProcessor._benchmarkTiming === "function";
+    if (benchmarkTiming) {
+      recordBenchmarkTiming(processor, "transferableProbeStarted");
+    }
     const worker = createWorker("transferTypedArrayTest");
     worker.postMessage = worker.webkitPostMessage ?? worker.postMessage;
 
@@ -34,6 +40,11 @@ function canTransferArrayBuffer() {
         settled = true;
         cleanup();
         TaskProcessor._canTransferArrayBuffer = result;
+        if (benchmarkTiming) {
+          recordBenchmarkTiming(processor, "transferableProbeReady", {
+            canTransferArrayBuffer: result,
+          });
+        }
         resolve(result);
       };
 
@@ -72,6 +83,41 @@ function canTransferArrayBuffer() {
 }
 
 const taskCompletedEvent = new Event();
+const benchmarkWorkerIds = new WeakMap();
+let nextBenchmarkProcessorId = 0;
+let nextBenchmarkWorkerId = 0;
+
+function recordBenchmarkTiming(processor, phase, details) {
+  const callback = TaskProcessor._benchmarkTiming;
+  if (typeof callback !== "function") {
+    return false;
+  }
+
+  if (!defined(processor._benchmarkProcessorId)) {
+    processor._benchmarkProcessorId = ++nextBenchmarkProcessorId;
+  }
+
+  const worker = details?.worker;
+  let workerId;
+  if (defined(worker)) {
+    workerId = benchmarkWorkerIds.get(worker);
+    if (!defined(workerId)) {
+      workerId = ++nextBenchmarkWorkerId;
+      benchmarkWorkerIds.set(worker, workerId);
+    }
+  }
+
+  callback({
+    phase: phase,
+    timestampMs: performance.now(),
+    processorId: processor._benchmarkProcessorId,
+    workerId: workerId,
+    workerPath: processor._workerPath,
+    ...details,
+    worker: undefined,
+  });
+  return true;
+}
 
 function urlFromScript(script) {
   let blob;
@@ -210,6 +256,7 @@ function TaskProcessor(workerPath, maximumActiveTasks) {
   this._webAssemblyPromise = undefined;
   this._webAssemblyWorker = undefined;
   this._webAssemblyPending = undefined;
+  this._preloadedWorker = undefined;
   this._pendingTasks = new Map();
   this._workerFailureHandlers = new Map();
 }
@@ -349,6 +396,9 @@ function handleWorkerFailure(processor, worker, event) {
 
 function createProcessorWorker(processor) {
   const worker = createWorker(processor._workerPath);
+  if (typeof TaskProcessor._benchmarkTiming === "function") {
+    recordBenchmarkTiming(processor, "workerCreated", { worker: worker });
+  }
   const failureHandler = (event) =>
     handleWorkerFailure(processor, worker, event);
 
@@ -377,8 +427,20 @@ async function getWorker(processor) {
 }
 
 const emptyTransferableObjectArray = [];
-async function runTask(processor, parameters, transferableObjects) {
+async function runTask(
+  processor,
+  parameters,
+  transferableObjects,
+  benchmarkMetadata,
+) {
   const id = processor._nextID++;
+  const benchmarkTiming = typeof TaskProcessor._benchmarkTiming === "function";
+  if (benchmarkTiming) {
+    recordBenchmarkTiming(processor, "taskScheduled", {
+      taskId: id,
+      benchmarkMetadata,
+    });
+  }
   const worker = defined(processor._webAssemblyConfig)
     ? await getWorker(processor)
     : processor._worker;
@@ -386,6 +448,15 @@ async function runTask(processor, parameters, transferableObjects) {
     const listener = ({ data }) => {
       if (!defined(data) || data.id !== id) {
         return;
+      }
+
+      if (benchmarkTiming) {
+        recordBenchmarkTiming(processor, "resultReceived", {
+          worker: worker,
+          taskId: id,
+          workerTiming: data.benchmarkTiming,
+          benchmarkMetadata,
+        });
       }
 
       if (defined(data.error)) {
@@ -405,7 +476,9 @@ async function runTask(processor, parameters, transferableObjects) {
   });
 
   try {
-    const canTransfer = await Promise.resolve(canTransferArrayBuffer());
+    const canTransfer = await Promise.resolve(
+      canTransferArrayBuffer(processor),
+    );
     if (!processor._pendingTasks.has(id)) {
       return promise;
     }
@@ -416,15 +489,23 @@ async function runTask(processor, parameters, transferableObjects) {
       transferableObjects.length = 0;
     }
 
-    worker.postMessage(
-      {
-        id: id,
-        baseUrl: buildModuleUrl.getCesiumBaseUrl().url,
-        parameters: parameters,
-        canTransferArrayBuffer: canTransfer,
-      },
-      transferableObjects,
-    );
+    if (benchmarkTiming) {
+      recordBenchmarkTiming(processor, "taskPosted", {
+        worker: worker,
+        taskId: id,
+        benchmarkMetadata,
+      });
+    }
+    const message = {
+      id: id,
+      baseUrl: buildModuleUrl.getCesiumBaseUrl().url,
+      parameters: parameters,
+      canTransferArrayBuffer: canTransfer,
+    };
+    if (benchmarkTiming) {
+      message.benchmarkTiming = true;
+    }
+    worker.postMessage(message, transferableObjects);
   } catch (error) {
     settleTask(processor, id, error);
   }
@@ -432,11 +513,21 @@ async function runTask(processor, parameters, transferableObjects) {
   return promise;
 }
 
-async function scheduleTask(processor, parameters, transferableObjects) {
+async function scheduleTask(
+  processor,
+  parameters,
+  transferableObjects,
+  benchmarkMetadata,
+) {
   ++processor._activeTasks;
 
   try {
-    const result = await runTask(processor, parameters, transferableObjects);
+    const result = await runTask(
+      processor,
+      parameters,
+      transferableObjects,
+      benchmarkMetadata,
+    );
     --processor._activeTasks;
     return result;
   } catch (error) {
@@ -474,6 +565,7 @@ async function scheduleTask(processor, parameters, transferableObjects) {
 TaskProcessor.prototype.scheduleTask = function (
   parameters,
   transferableObjects,
+  benchmarkMetadata,
 ) {
   if (!defined(this._worker)) {
     if (!defined(this._webAssemblyConfig)) {
@@ -485,7 +577,35 @@ TaskProcessor.prototype.scheduleTask = function (
     return undefined;
   }
 
-  return scheduleTask(this, parameters, transferableObjects);
+  return scheduleTask(this, parameters, transferableObjects, benchmarkMetadata);
+};
+
+/**
+ * Creates this processor's worker and completes the transferable ArrayBuffer
+ * capability probe without posting a decoder task.
+ *
+ * @returns {Promise<boolean>} A promise that resolves to whether ArrayBuffers
+ *          can be transferred.
+ *
+ * @private
+ */
+TaskProcessor.prototype._preloadWorker = async function () {
+  if (!defined(this._worker)) {
+    this._worker = createProcessorWorker(this);
+  }
+
+  const worker = this._worker;
+  const canTransfer = await Promise.resolve(canTransferArrayBuffer(this));
+  if (this._worker !== worker) {
+    throw new RuntimeError("Worker failed while preloading.");
+  }
+
+  recordBenchmarkTiming(this, "workerPreloadReady", {
+    worker: worker,
+    canTransferArrayBuffer: canTransfer,
+  });
+  this._preloadedWorker = worker;
+  return canTransfer;
 };
 
 /**
@@ -520,7 +640,11 @@ TaskProcessor.prototype.initWebAssemblyModule = async function (
 
   let initializationWorker;
   const init = async () => {
-    const worker = (this._worker = createProcessorWorker(this));
+    const worker =
+      defined(this._worker) && this._worker === this._preloadedWorker
+        ? this._worker
+        : (this._worker = createProcessorWorker(this));
+    this._preloadedWorker = undefined;
     initializationWorker = worker;
     this._webAssemblyWorker = worker;
     const wasmConfig = this._webAssemblyConfig;
@@ -534,6 +658,13 @@ TaskProcessor.prototype.initWebAssemblyModule = async function (
             new RuntimeError("Could not configure wasm module"),
           );
           return;
+        }
+
+        if (typeof TaskProcessor._benchmarkTiming === "function") {
+          recordBenchmarkTiming(this, "wasmInitializationResultReceived", {
+            worker: worker,
+            workerTiming: data.benchmarkTiming,
+          });
         }
 
         if (defined(data.error)) {
@@ -554,16 +685,25 @@ TaskProcessor.prototype.initWebAssemblyModule = async function (
     });
 
     try {
-      const canTransfer = await Promise.resolve(canTransferArrayBuffer());
+      const canTransfer = await Promise.resolve(canTransferArrayBuffer(this));
       if (!defined(this._webAssemblyPending)) {
         return promise;
       }
 
-      worker.postMessage({
+      const benchmarkTiming = recordBenchmarkTiming(
+        this,
+        "wasmInitializationPosted",
+        { worker: worker },
+      );
+      const message = {
         canTransferArrayBuffer: canTransfer,
         baseUrl: buildModuleUrl.getCesiumBaseUrl().url,
         parameters: { webAssemblyConfig: wasmConfig },
-      });
+      };
+      if (benchmarkTiming) {
+        message.benchmarkTiming = true;
+      }
+      worker.postMessage(message);
     } catch (error) {
       settleWebAssembly(this, worker, error);
       throw error;
@@ -635,4 +775,7 @@ TaskProcessor.taskCompletedEvent = taskCompletedEvent;
 TaskProcessor._defaultWorkerModulePrefix = "Workers/";
 TaskProcessor._workerModulePrefix = TaskProcessor._defaultWorkerModulePrefix;
 TaskProcessor._canTransferArrayBuffer = undefined;
+// Opt-in benchmark hook. It is intentionally unset in normal runtime.
+TaskProcessor._benchmarkTiming = undefined;
+TaskProcessor._recordBenchmarkTiming = recordBenchmarkTiming;
 export default TaskProcessor;

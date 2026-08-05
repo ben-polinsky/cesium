@@ -7,13 +7,21 @@ import TaskProcessor from "../Core/TaskProcessor.js";
  * @private
  */
 class DracoLoader {
-  static _getDecoderTaskProcessor() {
+  static _getOrCreateDecoderTaskProcessor() {
     if (!defined(DracoLoader._decoderTaskProcessor)) {
-      const processor = new TaskProcessor(
+      DracoLoader._decoderTaskProcessor = new TaskProcessor(
         "decodeDraco",
         DracoLoader._maxDecodingConcurrency,
       );
-      processor
+    }
+
+    return DracoLoader._decoderTaskProcessor;
+  }
+
+  static _initializeDecoderTaskProcessor() {
+    if (!defined(DracoLoader._taskProcessorReadyPromise)) {
+      const processor = DracoLoader._getOrCreateDecoderTaskProcessor();
+      DracoLoader._taskProcessorReadyPromise = processor
         .initWebAssemblyModule({
           wasmBinaryFile: "ThirdParty/draco_decoder.wasm",
         })
@@ -29,10 +37,29 @@ class DracoLoader {
         .catch((error) => {
           DracoLoader._error = error;
         });
-      DracoLoader._decoderTaskProcessor = processor;
     }
 
-    return DracoLoader._decoderTaskProcessor;
+    return DracoLoader._taskProcessorReadyPromise;
+  }
+
+  static _getDecoderTaskProcessor() {
+    const processor = DracoLoader._getOrCreateDecoderTaskProcessor();
+    DracoLoader._initializeDecoderTaskProcessor();
+    return processor;
+  }
+
+  static async _preloadWorkerForBenchmark() {
+    return DracoLoader._getOrCreateDecoderTaskProcessor()._preloadWorker();
+  }
+
+  static async _preloadWorkerAndWasmForBenchmark() {
+    const processor = DracoLoader._getOrCreateDecoderTaskProcessor();
+    const canTransferArrayBuffer = await processor._preloadWorker();
+    await DracoLoader._initializeDecoderTaskProcessor();
+    if (defined(DracoLoader._error)) {
+      throw DracoLoader._error;
+    }
+    return canTransferArrayBuffer;
   }
 
   /**
@@ -94,6 +121,7 @@ DracoLoader._maxDecodingConcurrency = Math.max(
 
 // Exposed for testing purposes
 DracoLoader._decoderTaskProcessor = undefined;
+DracoLoader._taskProcessorReadyPromise = undefined;
 DracoLoader._taskProcessorReady = false;
 DracoLoader._error = undefined;
 

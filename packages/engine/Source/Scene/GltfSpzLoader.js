@@ -236,8 +236,15 @@ class GltfSpzLoader extends ResourceLoader {
 
     // Buffer views can be shared by cached resources. Transfer a private copy
     // so decoding does not detach the cached source.
+    const inputCopyStartedMs = performance.now();
     const spzData = new Uint8Array(this._bufferViewTypedArray);
-    const decodePromise = SpzDecoder.decode(spzData);
+    const decodePromise = SpzDecoder.decode(spzData, {
+      sourceUrl: this._gltfResource.url,
+      bufferViewId: this._spz.bufferView,
+      primitivePositionAccessorId: this._primitive.attributes?.POSITION,
+      inputBytes: spzData.byteLength,
+      inputCopyStartedMs,
+    });
 
     if (!defined(decodePromise)) {
       return false;

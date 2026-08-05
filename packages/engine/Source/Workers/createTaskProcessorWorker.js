@@ -28,16 +28,32 @@ import formatError from "../Core/formatError.js";
 function createTaskProcessorWorker(workerFunction) {
   async function onMessageHandler({ data }) {
     const transferableObjects = [];
+    const benchmarkTiming = data.benchmarkTiming
+      ? {
+          operation: data.parameters?.webAssemblyConfig
+            ? "wasmInitialization"
+            : "task",
+          workerTimeOriginMs: performance.timeOrigin,
+          workerModuleReadyMs: performance.now(),
+          workerMessageReceivedMs: performance.now(),
+          workerTaskStartedMs: performance.now(),
+        }
+      : undefined;
     const responseMessage = {
       id: data.id,
       result: undefined,
       error: undefined,
     };
+    if (benchmarkTiming) {
+      responseMessage.benchmarkTiming = benchmarkTiming;
+    }
 
     self.CESIUM_BASE_URL = data.baseUrl;
 
     try {
-      const result = await workerFunction(data.parameters, transferableObjects);
+      const result = await (benchmarkTiming
+        ? workerFunction(data.parameters, transferableObjects, benchmarkTiming)
+        : workerFunction(data.parameters, transferableObjects));
       responseMessage.result = result;
     } catch (error) {
       if (error instanceof Error) {
@@ -48,6 +64,13 @@ function createTaskProcessorWorker(workerFunction) {
         };
       } else {
         responseMessage.error = error;
+      }
+    }
+
+    if (benchmarkTiming) {
+      benchmarkTiming.workerTaskEndedMs = performance.now();
+      if (benchmarkTiming.operation === "wasmInitialization") {
+        benchmarkTiming.wasmDecoderReadyMs = benchmarkTiming.workerTaskEndedMs;
       }
     }
 

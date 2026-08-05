@@ -1,10 +1,13 @@
 import createTaskProcessorWorker from "./createTaskProcessorWorker.js";
 import { loadSpz } from "@spz-loader/core";
 
-async function decodeSpz(parameters, transferableObjects) {
+async function decodeSpz(parameters, transferableObjects, benchmarkTiming) {
   const result = await loadSpz(parameters.spzData, {
     unpackOptions: { coordinateSystem: "UNSPECIFIED" },
   });
+  if (benchmarkTiming) {
+    benchmarkTiming.spzLoadResolvedMs = performance.now();
+  }
 
   transferableObjects.push(
     result.positions.buffer,

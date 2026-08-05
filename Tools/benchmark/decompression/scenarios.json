@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "scenarios": [
+    {
+      "id": "draco-model-cesium-man",
+      "category": "gltf",
+      "compression": "draco",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/CesiumMan.gltf",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/CesiumMan.gltf",
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/0.bin",
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/CesiumMan.jpg"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/CesiumMan.gltf",
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/0.bin",
+        "Specs/Data/Models/glTF-2.0/CesiumMan/glTF-Draco/CesiumMan.jpg"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "draco-model-cesium-milk-truck",
+      "category": "gltf",
+      "compression": "draco",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.gltf",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.gltf",
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/0.bin",
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.png"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.gltf",
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/0.bin",
+        "Specs/Data/Models/glTF-2.0/CesiumMilkTruck/glTF-Draco/CesiumMilkTruck.png"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "draco-model-duck",
+      "category": "gltf",
+      "compression": "draco",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/Duck.gltf",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/Duck.gltf",
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/Duck.bin",
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/DuckCM.png",
+        "Specs/Data/Models/glTF-2.0/Duck/README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/Duck.gltf",
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/Duck.bin",
+        "Specs/Data/Models/glTF-2.0/Duck/glTF-Draco/DuckCM.png"
+      ],
+      "provenance": {
+        "source": "CesiumJS repository test asset",
+        "license": "SCEA Shared Source License, Version 1.0; see Specs/Data/Models/glTF-2.0/Duck/README.md.",
+        "attribution": "Copyright 2006 Sony Computer Entertainment Inc."
+      }
+    },
+    {
+      "id": "meshopt-model-meshopt-cube-test",
+      "category": "gltf",
+      "compression": "meshopt",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.gltf",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.gltf",
+        "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.bin",
+        "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.gltf",
+        "Specs/Data/Models/glTF-2.0/MeshoptCubeTest/glTF-Meshopt/MeshoptCubeTest.bin"
+      ],
+      "provenance": {
+        "source": "Khronos glTF-Sample-Assets MeshoptCubeTest, vendored in CesiumJS",
+        "license": "CC0 1.0 Universal; see Specs/Data/Models/glTF-2.0/MeshoptCubeTest/README.md.",
+        "attribution": "Model by Arseny Kapoulkine"
+      }
+    },
+    {
+      "id": "meshopt-model-unit-square",
+      "category": "gltf",
+      "compression": "meshopt",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/unitSquare/unitSquare11x11_meshopt.glb",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/unitSquare/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/unitSquare/unitSquare11x11_meshopt.glb",
+        "Specs/Data/Models/glTF-2.0/unitSquare/README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/unitSquare/unitSquare11x11_meshopt.glb"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "ktx2-model-box",
+      "category": "gltf",
+      "compression": "ktx2",
+      "api": "Model.fromGltfAsync",
+      "url": "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/BoxTexturedKtx2Basis.gltf",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/BoxTexturedKtx2Basis.gltf",
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/BoxTexturedKtx2Basis.bin",
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/cesium_logo.ktx2"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/BoxTexturedKtx2Basis.gltf",
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/BoxTexturedKtx2Basis.bin",
+        "Specs/Data/Models/glTF-2.0/BoxTexturedKtx2Basis/glTF/cesium_logo.ktx2"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "draco-tiles-point-cloud",
+      "category": "3d-tiles",
+      "compression": "draco",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/tileset.json",
+      "resourcePrefix": "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/",
+      "assetFiles": [
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/tileset.json",
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/pointCloudDraco.pnts"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/tileset.json",
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDraco/pointCloudDraco.pnts"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository 3D Tiles test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "draco-tiles-point-cloud-batched",
+      "category": "3d-tiles",
+      "compression": "draco",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/tileset.json",
+      "resourcePrefix": "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/",
+      "assetFiles": [
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/tileset.json",
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/pointCloudDracoBatched.pnts"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/tileset.json",
+        "Specs/Data/Cesium3DTiles/PointCloud/PointCloudDracoBatched/pointCloudDracoBatched.pnts"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository 3D Tiles test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "spz-tiles-tower",
+      "category": "3d-tiles",
+      "compression": "spz",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Cesium3DTiles/GaussianSplats/tower/tileset.json",
+      "resourcePrefix": "Specs/Data/Cesium3DTiles/GaussianSplats/tower/",
+      "assetFiles": [
+        "Specs/Data/Cesium3DTiles/GaussianSplats/tower/tileset.json",
+        "Specs/Data/Cesium3DTiles/GaussianSplats/tower/0/0.glb"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Cesium3DTiles/GaussianSplats/tower/tileset.json",
+        "Specs/Data/Cesium3DTiles/GaussianSplats/tower/0/0.glb"
+      ],
+      "provenance": {
+        "source": "Existing CesiumJS repository Gaussian splat test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "spz-tiles-horned-lizard",
+      "category": "3d-tiles",
+      "compression": "spz",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Models/glTF-2.0/SPZ/hornedlizard.tileset.json",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/SPZ/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/hornedlizard.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/hornedlizard.spz.glb",
+        "Specs/Data/Models/glTF-2.0/SPZ/README.md",
+        "Specs/Data/Models/glTF-2.0/SPZ/manifest.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-LICENSE",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/hornedlizard.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/hornedlizard.spz.glb"
+      ],
+      "provenance": {
+        "source": "nianticlabs/spz samples/hornedlizard.spz, wrapped as a one-tile 3D Tiles tileset without changing the SPZ bytes.",
+        "sourceCommit": "3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9",
+        "license": "MIT; see Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-LICENSE.",
+        "attribution": "NianticLabs SPZ sample; see the retained source README and manifest."
+      }
+    },
+    {
+      "id": "spz-tiles-racoon-family",
+      "category": "3d-tiles",
+      "compression": "spz",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Models/glTF-2.0/SPZ/racoonfamily.tileset.json",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/SPZ/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/racoonfamily.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/racoonfamily.spz.glb",
+        "Specs/Data/Models/glTF-2.0/SPZ/README.md",
+        "Specs/Data/Models/glTF-2.0/SPZ/manifest.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-LICENSE",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/racoonfamily.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/racoonfamily.spz.glb"
+      ],
+      "provenance": {
+        "source": "nianticlabs/spz samples/racoonfamily.spz, wrapped as a one-tile 3D Tiles tileset without changing the SPZ bytes.",
+        "sourceCommit": "3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9",
+        "license": "MIT; see Specs/Data/Models/glTF-2.0/SPZ/provenance/nianticlabs-spz-LICENSE.",
+        "attribution": "NianticLabs SPZ sample; see the retained source README and manifest."
+      }
+    },
+    {
+      "id": "spz-tiles-innenstadt",
+      "category": "3d-tiles",
+      "compression": "spz",
+      "api": "Cesium3DTileset.fromUrl",
+      "url": "Specs/Data/Models/glTF-2.0/SPZ/innenstadt.tileset.json",
+      "resourcePrefix": "Specs/Data/Models/glTF-2.0/SPZ/",
+      "assetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/innenstadt.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/innenstadt.spz.glb",
+        "Specs/Data/Models/glTF-2.0/SPZ/README.md",
+        "Specs/Data/Models/glTF-2.0/SPZ/manifest.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/gkvoelkl-js-3dgs-LICENSE",
+        "Specs/Data/Models/glTF-2.0/SPZ/provenance/gkvoelkl-js-3dgs-README.md"
+      ],
+      "runtimeAssetFiles": [
+        "Specs/Data/Models/glTF-2.0/SPZ/innenstadt.tileset.json",
+        "Specs/Data/Models/glTF-2.0/SPZ/innenstadt.spz.glb"
+      ],
+      "provenance": {
+        "source": "gkvoelkl/js-3dgs scans/innenstadt.spz, wrapped as a one-tile 3D Tiles tileset without changing the SPZ bytes.",
+        "sourceCommit": "08adc53461c331b00ab3f96957f985c3e4c491d2",
+        "license": "MIT; see Specs/Data/Models/glTF-2.0/SPZ/provenance/gkvoelkl-js-3dgs-LICENSE.",
+        "attribution": "Scaniverse scan; see the retained source README and manifest."
+      }
+    },
+    {
+      "id": "kmz-simple",
+      "category": "kml",
+      "compression": "zip",
+      "api": "KmlDataSource.load",
+      "url": "Specs/Data/KML/simple.kmz",
+      "resourcePrefix": "Specs/Data/KML/",
+      "assetFiles": ["Specs/Data/KML/simple.kmz"],
+      "provenance": {
+        "source": "Existing CesiumJS repository KML test asset",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    },
+    {
+      "id": "gee-metadata",
+      "category": "google-earth-enterprise",
+      "compression": "gzip-encrypted-packet",
+      "api": "GoogleEarthEnterpriseMetadata.fromUrl",
+      "url": "Tools/benchmark/decompression/gee/",
+      "resourcePrefix": "Tools/benchmark/decompression/gee/",
+      "route": "gee",
+      "assetFiles": ["Specs/Data/GoogleEarthEnterprise/gee.metadata"],
+      "provenance": {
+        "source": "Existing CesiumJS repository Google Earth Enterprise test packets",
+        "license": "Redistributed as versioned CesiumJS test data; see the repository license and the asset metadata.",
+        "attribution": "CesiumJS test data"
+      }
+    }
+  ]
+}

@@ -114,6 +114,116 @@ describe("Core/TaskProcessor", function () {
     );
   });
 
+  it("reports task lifecycle timing only when opted in", async function () {
+    const previousCanTransferArrayBuffer =
+      TaskProcessor._canTransferArrayBuffer;
+    const previousBenchmarkTiming = TaskProcessor._benchmarkTiming;
+    const worker = createFakeWorker();
+    const timingEvents = [];
+    spyOn(window, "Worker").and.returnValue(worker);
+    TaskProcessor._canTransferArrayBuffer = true;
+    TaskProcessor._benchmarkTiming = (event) => timingEvents.push(event);
+    worker.postMessage.and.callFake(function (message) {
+      worker.dispatchEvent("message", {
+        data: {
+          id: message.id,
+          result: true,
+          benchmarkTiming: {
+            operation: "task",
+            workerTimeOriginMs: performance.timeOrigin,
+            workerModuleReadyMs: 1,
+            workerTaskStartedMs: 1,
+            workerTaskEndedMs: 2,
+          },
+        },
+      });
+    });
+
+    try {
+      taskProcessor = new TaskProcessor("worker.js");
+      await expectAsync(taskProcessor.scheduleTask()).toBeResolvedTo(true);
+
+      expect(worker.postMessage.calls.first().args[0].benchmarkTiming).toBe(
+        true,
+      );
+      expect(timingEvents.map((event) => event.phase)).toEqual([
+        "workerCreated",
+        "taskScheduled",
+        "taskPosted",
+        "resultReceived",
+      ]);
+      expect(timingEvents[3].workerTiming.operation).toBe("task");
+    } finally {
+      TaskProcessor._canTransferArrayBuffer = previousCanTransferArrayBuffer;
+      TaskProcessor._benchmarkTiming = previousBenchmarkTiming;
+    }
+  });
+
+  it("preloads a worker and transfer probe without posting a task", async function () {
+    const previousCanTransferArrayBuffer =
+      TaskProcessor._canTransferArrayBuffer;
+    const previousBenchmarkTiming = TaskProcessor._benchmarkTiming;
+    const taskWorker = createFakeWorker();
+    const probeWorker = createFakeWorker();
+    const timingEvents = [];
+    const workers = [taskWorker, probeWorker];
+    spyOn(window, "Worker").and.callFake(function () {
+      return workers.shift();
+    });
+    TaskProcessor._canTransferArrayBuffer = undefined;
+    TaskProcessor._benchmarkTiming = (event) => timingEvents.push(event);
+
+    try {
+      taskProcessor = new TaskProcessor("worker.js");
+      const promise = taskProcessor._preloadWorker();
+      probeWorker.dispatchEvent("message", {
+        data: { array: new Int8Array([99]) },
+      });
+
+      await expectAsync(promise).toBeResolvedTo(true);
+      expect(taskWorker.postMessage).not.toHaveBeenCalled();
+      expect(probeWorker.postMessage).toHaveBeenCalledTimes(1);
+      expect(probeWorker.terminate).toHaveBeenCalled();
+      expect(timingEvents.map((event) => event.phase)).toEqual([
+        "workerCreated",
+        "workerPreloadReady",
+      ]);
+    } finally {
+      TaskProcessor._canTransferArrayBuffer = previousCanTransferArrayBuffer;
+      TaskProcessor._benchmarkTiming = previousBenchmarkTiming;
+    }
+  });
+
+  it("reuses a preloaded worker for web assembly initialization", async function () {
+    const previousCanTransferArrayBuffer =
+      TaskProcessor._canTransferArrayBuffer;
+    const worker = createFakeWorker();
+    spyOn(window, "Worker").and.returnValue(worker);
+    TaskProcessor._canTransferArrayBuffer = true;
+    worker.postMessage.and.callFake(function () {
+      worker.dispatchEvent("message", {
+        data: {
+          result: "initialized",
+        },
+      });
+    });
+
+    try {
+      taskProcessor = new TaskProcessor("worker.js");
+      await taskProcessor._preloadWorker();
+      await expectAsync(
+        taskProcessor.initWebAssemblyModule({
+          wasmBinaryFile: "https://example.com/module.wasm",
+        }),
+      ).toBeResolvedTo("initialized");
+
+      expect(window.Worker).toHaveBeenCalledTimes(1);
+      expect(worker.postMessage).toHaveBeenCalledTimes(1);
+    } finally {
+      TaskProcessor._canTransferArrayBuffer = previousCanTransferArrayBuffer;
+    }
+  });
+
   it("preserves fragments on absolute worker URLs", async function () {
     const workerUrl = `${absolutize(
       "../Build/Specs/TestWorkers/returnParameters.js",

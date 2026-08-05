@@ -84,10 +84,29 @@ Object.defineProperties(SpzDecoder, {
  *          decode result, or undefined when the worker is busy.
  * @private
  */
-SpzDecoder.decode = function (spzData) {
-  return getDecoderTaskProcessor().scheduleTask({ spzData: spzData }, [
-    spzData.buffer,
-  ]);
+SpzDecoder.decode = function (spzData, benchmarkMetadata) {
+  const taskProcessor = getDecoderTaskProcessor();
+  if (
+    typeof TaskProcessor._benchmarkTiming === "function" &&
+    defined(benchmarkMetadata?.inputCopyStartedMs)
+  ) {
+    TaskProcessor._recordBenchmarkTiming(taskProcessor, "inputCopyStarted", {
+      timestampMs: benchmarkMetadata.inputCopyStartedMs,
+      benchmarkMetadata,
+    });
+    TaskProcessor._recordBenchmarkTiming(taskProcessor, "inputCopyCompleted", {
+      benchmarkMetadata,
+    });
+  }
+  return taskProcessor.scheduleTask(
+    { spzData: spzData },
+    [spzData.buffer],
+    benchmarkMetadata,
+  );
+};
+
+SpzDecoder._preloadWorkerForBenchmark = function () {
+  return getDecoderTaskProcessor()._preloadWorker();
 };
 
 SpzDecoder._decoderTaskProcessor = undefined;

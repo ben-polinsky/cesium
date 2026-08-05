@@ -1,0 +1,1776 @@
+{
+  "$schema": "../fixture-manifest.schema.json",
+  "schemaVersion": 1,
+  "codec": "draco",
+  "encoder": {
+    "package": "draco3d",
+    "version": "1.5.7",
+    "integrity": "sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ=="
+  },
+  "generator": {
+    "name": "Cesium Draco benchmark fixture generator",
+    "version": "1.1.0",
+    "schemaVersion": 2,
+    "sourceFiles": [
+      {
+        "path": "Tools/benchmark/draco/generate-fixtures.mjs",
+        "sizeBytes": 29448,
+        "sha256": "bddd2033024f7eb3d041de2b6f904ebfa8101a850704ad96930930a72e7586d8"
+      }
+    ]
+  },
+  "runtime": {
+    "nodeVersion": "v22.18.0",
+    "packageManager": "npm@10.9.3",
+    "os": "darwin",
+    "arch": "arm64"
+  },
+  "fixtures": [
+    {
+      "id": "mesh-small-unquantized",
+      "path": "mesh-small-unquantized.drc",
+      "compressed": {
+        "sizeBytes": 48416,
+        "sha256": "f9ffcde487e952f39e7841ea2d239ca0d5dfc04151326a575d86b2930c61ed85"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 32,
+            "scale": 1,
+            "phase": 0.125,
+            "attributeProfile": "unquantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 32,
+            "scale": 1,
+            "phase": 0.125,
+            "attributeProfile": "unquantized",
+            "quantization": {},
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethod": null,
+              "pointCloudEncodingMethodValue": null,
+              "pointCloudDeduplicateValues": null
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "TEX_COORD",
+              "type": "TEX_COORD",
+              "dataType": "FLOAT32",
+              "components": 2,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "FEATURE_ID",
+              "type": "GENERIC",
+              "dataType": "INT16",
+              "components": 2,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodeMeshToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": null,
+            "pointCloudDeduplicateValues": null,
+            "quantization": {}
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToMesh",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "TRIANGULAR_MESH",
+            "dequantizeInShader": false,
+            "attributesToSkipTransform": [],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "93f7e571b10f4bc2a70b41b0cd3c2dfebe981b7f8f4e81f5eee80e89e3335636"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 68136,
+        "sha256": "1df3cc8ba2bb62ab03fb0132ff79a8f4b5642d7cdfc606ddeb5e5094f9330468",
+        "format": "little-endian raw source-input typed-array bytes concatenated in indices -> POSITION -> NORMAL -> TEX_COORD -> COLOR -> FEATURE_ID order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "TRIANGULAR_MESH",
+          "numPoints": 1089,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 1089,
+              "arrayLength": 3267,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 1089,
+              "arrayLength": 3267,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "TEX_COORD": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 2,
+              "count": 1089,
+              "arrayLength": 2178,
+              "normalized": false,
+              "byteStride": 8,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 1089,
+              "arrayLength": 4356,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "FEATURE_ID": {
+              "sourceDataType": "INT16",
+              "typedArray": "Int16Array",
+              "componentDatatype": "SHORT",
+              "componentsPerAttribute": 2,
+              "count": 1089,
+              "arrayLength": 2178,
+              "normalized": false,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "indices",
+              "POSITION",
+              "NORMAL",
+              "TEX_COORD",
+              "COLOR",
+              "FEATURE_ID"
+            ],
+            "index": {
+              "sourceDataType": "INT32",
+              "typedArray": "Int32Array",
+              "componentDatatype": "INT",
+              "count": 6144,
+              "byteLength": 24576
+            }
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          },
+          "numFaces": 2048
+        }
+      },
+      "metadata": {
+        "tier": "small",
+        "geometry": "mesh",
+        "shape": "heightfield-grid",
+        "gridSize": 32,
+        "scale": 1,
+        "phase": 0.125,
+        "attributeProfile": "unquantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "TEX_COORD",
+            "type": "TEX_COORD",
+            "dataType": "FLOAT32",
+            "components": 2,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "FEATURE_ID",
+            "type": "GENERIC",
+            "dataType": "INT16",
+            "components": 2,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "mesh",
+          "shape": "heightfield-grid",
+          "gridSize": 32,
+          "scale": 1,
+          "phase": 0.125,
+          "attributeProfile": "unquantized",
+          "quantization": {},
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethod": null,
+            "pointCloudEncodingMethodValue": null,
+            "pointCloudDeduplicateValues": null
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodeMeshToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": null,
+          "pointCloudDeduplicateValues": null,
+          "quantization": {}
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToMesh",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "TRIANGULAR_MESH",
+          "dequantizeInShader": false,
+          "attributesToSkipTransform": [],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    },
+    {
+      "id": "mesh-medium-quantized",
+      "path": "mesh-medium-quantized.drc",
+      "compressed": {
+        "sizeBytes": 156684,
+        "sha256": "c6d6b4844156969be4c23b67b900510811e56dd30662ff3cb11b46974f96a3a3"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 96,
+            "scale": 100,
+            "phase": 0.375,
+            "attributeProfile": "quantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 96,
+            "scale": 100,
+            "phase": 0.375,
+            "attributeProfile": "quantized",
+            "quantization": {
+              "POSITION": 14,
+              "NORMAL": 10,
+              "TEX_COORD": 12
+            },
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethod": null,
+              "pointCloudEncodingMethodValue": null,
+              "pointCloudDeduplicateValues": null
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "TEX_COORD",
+              "type": "TEX_COORD",
+              "dataType": "FLOAT32",
+              "components": 2,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "FEATURE_ID",
+              "type": "GENERIC",
+              "dataType": "UINT16",
+              "components": 1,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodeMeshToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": null,
+            "pointCloudDeduplicateValues": null,
+            "quantization": {
+              "POSITION": 14,
+              "NORMAL": 10,
+              "TEX_COORD": 12
+            }
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToMesh",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "TRIANGULAR_MESH",
+            "dequantizeInShader": true,
+            "attributesToSkipTransform": [
+              "POSITION",
+              "NORMAL",
+              "TEX_COORD"
+            ],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "147057979f6ba475885f1dc23fb433875524300bac1a60e8e16edd1074d032a6"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 597544,
+        "sha256": "69a48eb1ff6adefa260fc02400a8e2bcee4f1c0a558857beeb53133e4ea8c9d5",
+        "format": "little-endian raw source-input typed-array bytes concatenated in indices -> POSITION -> NORMAL -> TEX_COORD -> COLOR -> FEATURE_ID order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "TRIANGULAR_MESH",
+          "numPoints": 9409,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 9409,
+              "arrayLength": 28227,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 14,
+              "requestedTransform": "uniform"
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 9409,
+              "arrayLength": 28227,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 10,
+              "requestedTransform": "octahedral"
+            },
+            "TEX_COORD": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 2,
+              "count": 9409,
+              "arrayLength": 18818,
+              "normalized": false,
+              "byteStride": 8,
+              "requestedQuantizationBits": 12,
+              "requestedTransform": "uniform"
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 9409,
+              "arrayLength": 37636,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "FEATURE_ID": {
+              "sourceDataType": "UINT16",
+              "typedArray": "Int16Array",
+              "componentDatatype": "UNSIGNED_SHORT",
+              "componentsPerAttribute": 1,
+              "count": 9409,
+              "arrayLength": 18818,
+              "normalized": false,
+              "byteStride": 2,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "indices",
+              "POSITION",
+              "NORMAL",
+              "TEX_COORD",
+              "COLOR",
+              "FEATURE_ID"
+            ],
+            "index": {
+              "sourceDataType": "INT32",
+              "typedArray": "Int32Array",
+              "componentDatatype": "INT",
+              "count": 55296,
+              "byteLength": 221184
+            }
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          },
+          "numFaces": 18432
+        }
+      },
+      "metadata": {
+        "tier": "medium",
+        "geometry": "mesh",
+        "shape": "heightfield-grid",
+        "gridSize": 96,
+        "scale": 100,
+        "phase": 0.375,
+        "attributeProfile": "quantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "TEX_COORD",
+            "type": "TEX_COORD",
+            "dataType": "FLOAT32",
+            "components": 2,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "FEATURE_ID",
+            "type": "GENERIC",
+            "dataType": "UINT16",
+            "components": 1,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "mesh",
+          "shape": "heightfield-grid",
+          "gridSize": 96,
+          "scale": 100,
+          "phase": 0.375,
+          "attributeProfile": "quantized",
+          "quantization": {
+            "POSITION": 14,
+            "NORMAL": 10,
+            "TEX_COORD": 12
+          },
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethod": null,
+            "pointCloudEncodingMethodValue": null,
+            "pointCloudDeduplicateValues": null
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodeMeshToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": null,
+          "pointCloudDeduplicateValues": null,
+          "quantization": {
+            "POSITION": 14,
+            "NORMAL": 10,
+            "TEX_COORD": 12
+          }
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToMesh",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "TRIANGULAR_MESH",
+          "dequantizeInShader": true,
+          "attributesToSkipTransform": [
+            "POSITION",
+            "NORMAL",
+            "TEX_COORD"
+          ],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    },
+    {
+      "id": "mesh-large-quantized",
+      "path": "mesh-large-quantized.drc",
+      "compressed": {
+        "sizeBytes": 623250,
+        "sha256": "dccc5104f4ef0f637d04e3e783a8eadeffd8bac8b9aef290ee365ab36f5de741"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 192,
+            "scale": 10000,
+            "phase": 0.625,
+            "attributeProfile": "quantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "mesh",
+            "shape": "heightfield-grid",
+            "gridSize": 192,
+            "scale": 10000,
+            "phase": 0.625,
+            "attributeProfile": "quantized",
+            "quantization": {
+              "POSITION": 16,
+              "NORMAL": 10,
+              "TEX_COORD": 14
+            },
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethod": null,
+              "pointCloudEncodingMethodValue": null,
+              "pointCloudDeduplicateValues": null
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "TEX_COORD",
+              "type": "TEX_COORD",
+              "dataType": "FLOAT32",
+              "components": 2,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "FEATURE_ID",
+              "type": "GENERIC",
+              "dataType": "UINT16",
+              "components": 1,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodeMeshToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": null,
+            "pointCloudDeduplicateValues": null,
+            "quantization": {
+              "POSITION": 16,
+              "NORMAL": 10,
+              "TEX_COORD": 14
+            }
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToMesh",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "TRIANGULAR_MESH",
+            "dequantizeInShader": true,
+            "attributesToSkipTransform": [
+              "POSITION",
+              "NORMAL",
+              "TEX_COORD"
+            ],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "78f0c6aeb217b63c506b3d929a2eaab0b9df0ebfdba6381321169f2d6c86a86f"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 2374696,
+        "sha256": "b8cd346e754a619d2e468f5663ee94f5a7322dc3b7dffa5aefe536d63a2ff89f",
+        "format": "little-endian raw source-input typed-array bytes concatenated in indices -> POSITION -> NORMAL -> TEX_COORD -> COLOR -> FEATURE_ID order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "TRIANGULAR_MESH",
+          "numPoints": 37249,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 37249,
+              "arrayLength": 111747,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 16,
+              "requestedTransform": "uniform"
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 37249,
+              "arrayLength": 111747,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 10,
+              "requestedTransform": "octahedral"
+            },
+            "TEX_COORD": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 2,
+              "count": 37249,
+              "arrayLength": 74498,
+              "normalized": false,
+              "byteStride": 8,
+              "requestedQuantizationBits": 14,
+              "requestedTransform": "uniform"
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 37249,
+              "arrayLength": 148996,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "FEATURE_ID": {
+              "sourceDataType": "UINT16",
+              "typedArray": "Int16Array",
+              "componentDatatype": "UNSIGNED_SHORT",
+              "componentsPerAttribute": 1,
+              "count": 37249,
+              "arrayLength": 74498,
+              "normalized": false,
+              "byteStride": 2,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "indices",
+              "POSITION",
+              "NORMAL",
+              "TEX_COORD",
+              "COLOR",
+              "FEATURE_ID"
+            ],
+            "index": {
+              "sourceDataType": "INT32",
+              "typedArray": "Int32Array",
+              "componentDatatype": "INT",
+              "count": 221184,
+              "byteLength": 884736
+            }
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          },
+          "numFaces": 73728
+        }
+      },
+      "metadata": {
+        "tier": "large",
+        "geometry": "mesh",
+        "shape": "heightfield-grid",
+        "gridSize": 192,
+        "scale": 10000,
+        "phase": 0.625,
+        "attributeProfile": "quantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "TEX_COORD",
+            "type": "TEX_COORD",
+            "dataType": "FLOAT32",
+            "components": 2,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "FEATURE_ID",
+            "type": "GENERIC",
+            "dataType": "UINT16",
+            "components": 1,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "mesh",
+          "shape": "heightfield-grid",
+          "gridSize": 192,
+          "scale": 10000,
+          "phase": 0.625,
+          "attributeProfile": "quantized",
+          "quantization": {
+            "POSITION": 16,
+            "NORMAL": 10,
+            "TEX_COORD": 14
+          },
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": "MESH_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethod": null,
+            "pointCloudEncodingMethodValue": null,
+            "pointCloudDeduplicateValues": null
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodeMeshToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "MESH_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": null,
+          "pointCloudDeduplicateValues": null,
+          "quantization": {
+            "POSITION": 16,
+            "NORMAL": 10,
+            "TEX_COORD": 14
+          }
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToMesh",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "TRIANGULAR_MESH",
+          "dequantizeInShader": true,
+          "attributesToSkipTransform": [
+            "POSITION",
+            "NORMAL",
+            "TEX_COORD"
+          ],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    },
+    {
+      "id": "point-small-unquantized",
+      "path": "point-small-unquantized.drc",
+      "compressed": {
+        "sizeBytes": 105517,
+        "sha256": "84d0e3d1e548ef163a7f212db8bbd7d06ea5906dae2d6b7e6bf303a4a48919ec"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 64,
+            "scale": 10,
+            "phase": 0.25,
+            "attributeProfile": "unquantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 64,
+            "scale": 10,
+            "phase": 0.25,
+            "attributeProfile": "unquantized",
+            "quantization": {},
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": null,
+              "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethodValue": 0,
+              "pointCloudDeduplicateValues": false
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "INTENSITY",
+              "type": "GENERIC",
+              "dataType": "UINT16",
+              "components": 1,
+              "normalized": false
+            },
+            {
+              "name": "CLASSIFICATION",
+              "type": "GENERIC",
+              "dataType": "INT8",
+              "components": 1,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodePointCloudToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false,
+            "quantization": {}
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToPointCloud",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "POINT_CLOUD",
+            "dequantizeInShader": false,
+            "attributesToSkipTransform": [],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "5c194299091c27828e0753172c4d7b55876b72335cb7963b337930edd53d2337"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 130975,
+        "sha256": "ec789d8dc10813bd4cb2fb40c993a140b58047bab05512cd9f75b9aed094868d",
+        "format": "little-endian raw source-input typed-array bytes concatenated in POSITION -> NORMAL -> COLOR -> INTENSITY -> CLASSIFICATION order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "POINT_CLOUD",
+          "numPoints": 4225,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 4225,
+              "arrayLength": 12675,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 4225,
+              "arrayLength": 12675,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 4225,
+              "arrayLength": 16900,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "INTENSITY": {
+              "sourceDataType": "UINT16",
+              "typedArray": "Uint16Array",
+              "componentDatatype": "UNSIGNED_SHORT",
+              "componentsPerAttribute": 1,
+              "count": 4225,
+              "arrayLength": 4225,
+              "normalized": false,
+              "byteStride": 2,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "CLASSIFICATION": {
+              "sourceDataType": "INT8",
+              "typedArray": "Int8Array",
+              "componentDatatype": "BYTE",
+              "componentsPerAttribute": 1,
+              "count": 4225,
+              "arrayLength": 4225,
+              "normalized": false,
+              "byteStride": 1,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "POSITION",
+              "NORMAL",
+              "COLOR",
+              "INTENSITY",
+              "CLASSIFICATION"
+            ],
+            "index": null
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          }
+        }
+      },
+      "metadata": {
+        "tier": "small",
+        "geometry": "point-cloud",
+        "shape": "heightfield-grid",
+        "gridSize": 64,
+        "scale": 10,
+        "phase": 0.25,
+        "attributeProfile": "unquantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "INTENSITY",
+            "type": "GENERIC",
+            "dataType": "UINT16",
+            "components": 1,
+            "normalized": false
+          },
+          {
+            "name": "CLASSIFICATION",
+            "type": "GENERIC",
+            "dataType": "INT8",
+            "components": 1,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "point-cloud",
+          "shape": "heightfield-grid",
+          "gridSize": 64,
+          "scale": 10,
+          "phase": 0.25,
+          "attributeProfile": "unquantized",
+          "quantization": {},
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": null,
+            "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodePointCloudToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": 0,
+          "pointCloudDeduplicateValues": false,
+          "quantization": {}
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToPointCloud",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "POINT_CLOUD",
+          "dequantizeInShader": false,
+          "attributesToSkipTransform": [],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    },
+    {
+      "id": "point-medium-quantized",
+      "path": "point-medium-quantized.drc",
+      "compressed": {
+        "sizeBytes": 164020,
+        "sha256": "1352ba1aa69d666d1a322464680c6a048c84744606d2f23f3eb5e7d06db68739"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 256,
+            "scale": 1000,
+            "phase": 0.5,
+            "attributeProfile": "quantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 256,
+            "scale": 1000,
+            "phase": 0.5,
+            "attributeProfile": "quantized",
+            "quantization": {
+              "POSITION": 14,
+              "NORMAL": 8
+            },
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": null,
+              "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethodValue": 0,
+              "pointCloudDeduplicateValues": false
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "INTENSITY",
+              "type": "GENERIC",
+              "dataType": "UINT16",
+              "components": 1,
+              "normalized": false
+            },
+            {
+              "name": "CLASSIFICATION",
+              "type": "GENERIC",
+              "dataType": "INT8",
+              "components": 1,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodePointCloudToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false,
+            "quantization": {
+              "POSITION": 14,
+              "NORMAL": 8
+            }
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToPointCloud",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "POINT_CLOUD",
+            "dequantizeInShader": true,
+            "attributesToSkipTransform": [
+              "POSITION",
+              "NORMAL"
+            ],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "95e056616fc87be31491f6b7a37c7c265b12ea56fb871af83d41af50816357bf"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 2047519,
+        "sha256": "03fba0db3cd44d81f582a9a972547ab6915ee9ec1c46679f483f69c8d81e63e8",
+        "format": "little-endian raw source-input typed-array bytes concatenated in POSITION -> NORMAL -> COLOR -> INTENSITY -> CLASSIFICATION order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "POINT_CLOUD",
+          "numPoints": 66049,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 66049,
+              "arrayLength": 198147,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 14,
+              "requestedTransform": "uniform"
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 66049,
+              "arrayLength": 198147,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 8,
+              "requestedTransform": "octahedral"
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 66049,
+              "arrayLength": 264196,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "INTENSITY": {
+              "sourceDataType": "UINT16",
+              "typedArray": "Uint16Array",
+              "componentDatatype": "UNSIGNED_SHORT",
+              "componentsPerAttribute": 1,
+              "count": 66049,
+              "arrayLength": 66049,
+              "normalized": false,
+              "byteStride": 2,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "CLASSIFICATION": {
+              "sourceDataType": "INT8",
+              "typedArray": "Int8Array",
+              "componentDatatype": "BYTE",
+              "componentsPerAttribute": 1,
+              "count": 66049,
+              "arrayLength": 66049,
+              "normalized": false,
+              "byteStride": 1,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "POSITION",
+              "NORMAL",
+              "COLOR",
+              "INTENSITY",
+              "CLASSIFICATION"
+            ],
+            "index": null
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          }
+        }
+      },
+      "metadata": {
+        "tier": "medium",
+        "geometry": "point-cloud",
+        "shape": "heightfield-grid",
+        "gridSize": 256,
+        "scale": 1000,
+        "phase": 0.5,
+        "attributeProfile": "quantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "INTENSITY",
+            "type": "GENERIC",
+            "dataType": "UINT16",
+            "components": 1,
+            "normalized": false
+          },
+          {
+            "name": "CLASSIFICATION",
+            "type": "GENERIC",
+            "dataType": "INT8",
+            "components": 1,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "point-cloud",
+          "shape": "heightfield-grid",
+          "gridSize": 256,
+          "scale": 1000,
+          "phase": 0.5,
+          "attributeProfile": "quantized",
+          "quantization": {
+            "POSITION": 14,
+            "NORMAL": 8
+          },
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": null,
+            "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodePointCloudToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": 0,
+          "pointCloudDeduplicateValues": false,
+          "quantization": {
+            "POSITION": 14,
+            "NORMAL": 8
+          }
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToPointCloud",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "POINT_CLOUD",
+          "dequantizeInShader": true,
+          "attributesToSkipTransform": [
+            "POSITION",
+            "NORMAL"
+          ],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    },
+    {
+      "id": "point-large-quantized",
+      "path": "point-large-quantized.drc",
+      "compressed": {
+        "sizeBytes": 631879,
+        "sha256": "7e5741802cf2fee4f6928f3f04f293171078820f0d5bb6829f2c46f0f095bc23"
+      },
+      "inputs": {
+        "sourceFiles": [],
+        "inline": {
+          "recipeVersion": 1,
+          "source": {
+            "recipe": "procedural-heightfield",
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 512,
+            "scale": 100000,
+            "phase": 0.75,
+            "attributeProfile": "quantized"
+          }
+        },
+        "options": {
+          "generation": {
+            "geometry": "point-cloud",
+            "shape": "heightfield-grid",
+            "gridSize": 512,
+            "scale": 100000,
+            "phase": 0.75,
+            "attributeProfile": "quantized",
+            "quantization": {
+              "POSITION": 16,
+              "NORMAL": 8
+            },
+            "encoding": {
+              "encodingSpeed": 5,
+              "decodingSpeed": 5,
+              "meshEncodingMethod": null,
+              "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+              "pointCloudEncodingMethodValue": 0,
+              "pointCloudDeduplicateValues": false
+            }
+          },
+          "attributes": [
+            {
+              "name": "POSITION",
+              "type": "POSITION",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "NORMAL",
+              "type": "NORMAL",
+              "dataType": "FLOAT32",
+              "components": 3,
+              "normalized": false
+            },
+            {
+              "name": "COLOR",
+              "type": "COLOR",
+              "dataType": "UINT8",
+              "components": 4,
+              "normalized": true
+            },
+            {
+              "name": "INTENSITY",
+              "type": "GENERIC",
+              "dataType": "UINT16",
+              "components": 1,
+              "normalized": false
+            },
+            {
+              "name": "CLASSIFICATION",
+              "type": "GENERIC",
+              "dataType": "INT8",
+              "components": 1,
+              "normalized": false
+            }
+          ],
+          "encoder": {
+            "package": "draco3d",
+            "packageVersion": "1.5.7",
+            "api": "Encoder.EncodePointCloudToDracoBuffer",
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "encodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false,
+            "quantization": {
+              "POSITION": 16,
+              "NORMAL": 8
+            }
+          },
+          "runtimeDecode": {
+            "api": "Decoder.DecodeBufferToPointCloud",
+            "worker": "packages/engine/Source/Workers/decodeDraco.js",
+            "geometryType": "POINT_CLOUD",
+            "dequantizeInShader": true,
+            "attributesToSkipTransform": [
+              "POSITION",
+              "NORMAL"
+            ],
+            "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+          }
+        },
+        "inputSha256": "60ba880a5352a6b512f957f8cddc21cb0504689073e73c1de1f256f67b8bfa39"
+      },
+      "expectedDecoded": {
+        "sizeBytes": 8158239,
+        "sha256": "912377989e0b7c78c36399753c4fdf3739131a613cd520dafc7416deba5157ba",
+        "format": "little-endian raw source-input typed-array bytes concatenated in POSITION -> NORMAL -> COLOR -> INTENSITY -> CLASSIFICATION order; this is a deterministic reference derived without decoding the Draco payload",
+        "summary": {
+          "geometryType": "POINT_CLOUD",
+          "numPoints": 263169,
+          "attributes": {
+            "POSITION": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 263169,
+              "arrayLength": 789507,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 16,
+              "requestedTransform": "uniform"
+            },
+            "NORMAL": {
+              "sourceDataType": "FLOAT32",
+              "typedArray": "Float32Array",
+              "componentDatatype": "FLOAT",
+              "componentsPerAttribute": 3,
+              "count": 263169,
+              "arrayLength": 789507,
+              "normalized": false,
+              "byteStride": 12,
+              "requestedQuantizationBits": 8,
+              "requestedTransform": "octahedral"
+            },
+            "COLOR": {
+              "sourceDataType": "UINT8",
+              "typedArray": "Uint8Array",
+              "componentDatatype": "UNSIGNED_BYTE",
+              "componentsPerAttribute": 4,
+              "count": 263169,
+              "arrayLength": 1052676,
+              "normalized": true,
+              "byteStride": 4,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "INTENSITY": {
+              "sourceDataType": "UINT16",
+              "typedArray": "Uint16Array",
+              "componentDatatype": "UNSIGNED_SHORT",
+              "componentsPerAttribute": 1,
+              "count": 263169,
+              "arrayLength": 263169,
+              "normalized": false,
+              "byteStride": 2,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            },
+            "CLASSIFICATION": {
+              "sourceDataType": "INT8",
+              "typedArray": "Int8Array",
+              "componentDatatype": "BYTE",
+              "componentsPerAttribute": 1,
+              "count": 263169,
+              "arrayLength": 263169,
+              "normalized": false,
+              "byteStride": 1,
+              "requestedQuantizationBits": null,
+              "requestedTransform": null
+            }
+          },
+          "serialization": {
+            "order": [
+              "POSITION",
+              "NORMAL",
+              "COLOR",
+              "INTENSITY",
+              "CLASSIFICATION"
+            ],
+            "index": null
+          },
+          "referenceKind": "deterministic-source-input",
+          "validation": {
+            "expectedData": "deterministic source geometry and attribute inputs",
+            "generator": "does not decode Draco payloads",
+            "authoritative": "future Cesium TaskProcessor/DracoLoader benchmark harness",
+            "quantizedAttributes": "require codec-specific production-decoder comparison or tolerance checks"
+          }
+        }
+      },
+      "metadata": {
+        "tier": "large",
+        "geometry": "point-cloud",
+        "shape": "heightfield-grid",
+        "gridSize": 512,
+        "scale": 100000,
+        "phase": 0.75,
+        "attributeProfile": "quantized",
+        "attributes": [
+          {
+            "name": "POSITION",
+            "type": "POSITION",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "NORMAL",
+            "type": "NORMAL",
+            "dataType": "FLOAT32",
+            "components": 3,
+            "normalized": false
+          },
+          {
+            "name": "COLOR",
+            "type": "COLOR",
+            "dataType": "UINT8",
+            "components": 4,
+            "normalized": true
+          },
+          {
+            "name": "INTENSITY",
+            "type": "GENERIC",
+            "dataType": "UINT16",
+            "components": 1,
+            "normalized": false
+          },
+          {
+            "name": "CLASSIFICATION",
+            "type": "GENERIC",
+            "dataType": "INT8",
+            "components": 1,
+            "normalized": false
+          }
+        ],
+        "generation": {
+          "geometry": "point-cloud",
+          "shape": "heightfield-grid",
+          "gridSize": 512,
+          "scale": 100000,
+          "phase": 0.75,
+          "attributeProfile": "quantized",
+          "quantization": {
+            "POSITION": 16,
+            "NORMAL": 8
+          },
+          "encoding": {
+            "encodingSpeed": 5,
+            "decodingSpeed": 5,
+            "meshEncodingMethod": null,
+            "pointCloudEncodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+            "pointCloudEncodingMethodValue": 0,
+            "pointCloudDeduplicateValues": false
+          }
+        },
+        "encoder": {
+          "package": "draco3d",
+          "packageVersion": "1.5.7",
+          "api": "Encoder.EncodePointCloudToDracoBuffer",
+          "encodingSpeed": 5,
+          "decodingSpeed": 5,
+          "encodingMethod": "POINT_CLOUD_SEQUENTIAL_ENCODING",
+          "encodingMethodValue": 0,
+          "pointCloudDeduplicateValues": false,
+          "quantization": {
+            "POSITION": 16,
+            "NORMAL": 8
+          }
+        },
+        "runtimeDecode": {
+          "api": "Decoder.DecodeBufferToPointCloud",
+          "worker": "packages/engine/Source/Workers/decodeDraco.js",
+          "geometryType": "POINT_CLOUD",
+          "dequantizeInShader": true,
+          "attributesToSkipTransform": [
+            "POSITION",
+            "NORMAL"
+          ],
+          "validationAuthority": "future Cesium TaskProcessor/DracoLoader benchmark harness"
+        },
+        "validation": {
+          "sourceReference": "expectedDecoded is derived from deterministic generator inputs",
+          "decodeAuthority": "only future Cesium TaskProcessor/DracoLoader execution is authoritative"
+        }
+      }
+    }
+  ]
+}

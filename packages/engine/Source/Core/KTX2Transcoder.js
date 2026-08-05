@@ -33,6 +33,20 @@ function makeReadyPromise() {
   KTX2Transcoder._readyPromise = readyPromise;
 }
 
+KTX2Transcoder._preloadWorkerForBenchmark = function () {
+  return KTX2Transcoder._transcodeTaskProcessor._preloadWorker();
+};
+
+KTX2Transcoder._preloadWorkerAndWasmForBenchmark = async function () {
+  const canTransferArrayBuffer =
+    await KTX2Transcoder._transcodeTaskProcessor._preloadWorker();
+  if (!defined(KTX2Transcoder._readyPromise)) {
+    makeReadyPromise();
+  }
+  await KTX2Transcoder._readyPromise;
+  return canTransferArrayBuffer;
+};
+
 KTX2Transcoder.transcode = function (ktx2Buffer, supportedTargetFormats) {
   //>>includeStart('debug', pragmas.debug);
   Check.defined("supportedTargetFormats", supportedTargetFormats);

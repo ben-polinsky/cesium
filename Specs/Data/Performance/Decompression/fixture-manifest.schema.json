@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/CesiumGS/cesium/main/Specs/Data/Performance/Decompression/fixture-manifest.schema.json",
+  "title": "CesiumJS codec benchmark fixture manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "codec",
+    "encoder",
+    "generator",
+    "runtime",
+    "fixtures"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "codec": {
+            "const": "draco"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "encoder": {
+            "properties": {
+              "package": {
+                "const": "draco3d"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "codec": {
+            "const": "meshopt"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "encoder": {
+            "properties": {
+              "package": {
+                "const": "meshoptimizer"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "codec": {
+      "enum": ["draco", "meshopt"]
+    },
+    "encoder": {
+      "$ref": "#/$defs/encoder"
+    },
+    "generator": {
+      "$ref": "#/$defs/generator"
+    },
+    "runtime": {
+      "$ref": "#/$defs/runtime"
+    },
+    "fixtures": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/fixture"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "relativePath": {
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+"
+    },
+    "exactVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$"
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sizeBytes", "sha256"],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "bytes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sizeBytes", "sha256"],
+      "properties": {
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "encoder": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["package", "version", "integrity"],
+      "description": "The exact encoder provenance for the committed fixture bytes. This does not pin the production dependency range.",
+      "properties": {
+        "package": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/exactVersion",
+          "description": "The exact installed encoder version used by the generator. Generation and verification must fail if the installed version differs."
+        },
+        "integrity": {
+          "type": "string",
+          "description": "The npm registry dist.integrity for the recorded encoder package.",
+          "pattern": "^sha(?:1|256|512)-[A-Za-z0-9+/]+={0,2}$"
+        }
+      }
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "schemaVersion", "sourceFiles"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/exactVersion"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sourceFiles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["nodeVersion", "packageManager"],
+      "properties": {
+        "nodeVersion": {
+          "type": "string",
+          "pattern": "^v?[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "packageManager": {
+          "type": "string",
+          "minLength": 1
+        },
+        "os": {
+          "type": "string",
+          "minLength": 1
+        },
+        "arch": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": ["inline"]
+        },
+        {
+          "properties": {
+            "sourceFiles": {
+              "minItems": 1
+            }
+          }
+        }
+      ],
+      "required": ["sourceFiles", "inputSha256", "options"],
+      "properties": {
+        "sourceFiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/file"
+          }
+        },
+        "inline": {},
+        "inputSha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "options": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "expectedDecoded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sizeBytes", "sha256", "format", "summary"],
+      "properties": {
+        "sizeBytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "format": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": true
+        }
+      }
+    },
+    "fixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "compressed", "inputs", "expectedDecoded"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "path": {
+          "$ref": "#/$defs/relativePath"
+        },
+        "compressed": {
+          "$ref": "#/$defs/bytes"
+        },
+        "inputs": {
+          "$ref": "#/$defs/inputs"
+        },
+        "expectedDecoded": {
+          "$ref": "#/$defs/expectedDecoded"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

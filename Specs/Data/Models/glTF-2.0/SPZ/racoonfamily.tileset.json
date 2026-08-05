@@ -1,0 +1,47 @@
+{
+  "asset": {
+    "version": "1.1"
+  },
+  "extensions": {
+    "3DTILES_content_gltf": {
+      "extensionsUsed": [
+        "KHR_gaussian_splatting",
+        "KHR_gaussian_splatting_compression_spz_2"
+      ],
+      "extensionsRequired": [
+        "KHR_gaussian_splatting",
+        "KHR_gaussian_splatting_compression_spz_2"
+      ]
+    }
+  },
+  "extensionsUsed": ["3DTILES_content_gltf"],
+  "geometricError": 100,
+  "root": {
+    "boundingVolume": {
+      "sphere": [0, 0, 0, 100]
+    },
+    "content": {
+      "uri": "racoonfamily.spz.glb"
+    },
+    "geometricError": 100,
+    "refine": "REPLACE",
+    "transform": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      6378137,
+      0,
+      0,
+      1
+    ]
+  }
+}

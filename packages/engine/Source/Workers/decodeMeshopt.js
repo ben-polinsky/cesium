@@ -1,8 +1,11 @@
 import createTaskProcessorWorker from "./createTaskProcessorWorker.js";
 import { MeshoptDecoder } from "meshoptimizer/decoder";
 
-async function decodeMeshopt(parameters, transferableObjects) {
+async function decodeMeshopt(parameters, transferableObjects, benchmarkTiming) {
   await MeshoptDecoder.ready;
+  if (benchmarkTiming) {
+    benchmarkTiming.decoderReadyMs = performance.now();
+  }
 
   const result = new Uint8Array(parameters.count * parameters.byteStride);
   MeshoptDecoder.decodeGltfBuffer(

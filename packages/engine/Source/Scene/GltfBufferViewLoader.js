@@ -81,6 +81,7 @@ class GltfBufferViewLoader extends ResourceLoader {
     this._gltfResource = gltfResource;
     this._baseResource = baseResource;
     this._buffer = buffer;
+    this._bufferViewId = bufferViewId;
     this._bufferId = bufferId;
     this._byteOffset = byteOffset;
     this._byteLength = byteLength;
@@ -144,6 +145,10 @@ class GltfBufferViewLoader extends ResourceLoader {
   }
 }
 
+GltfBufferViewLoader._preloadMeshoptWorkerForBenchmark = function () {
+  return decodeMeshoptTaskProcessor._preloadWorker();
+};
+
 /**
  * Load the resources associated with the loader.
  * @private
@@ -170,7 +175,26 @@ async function loadResources(loader) {
     if (loader._hasMeshopt) {
       // The buffer can be shared with other cached resources. Copy the encoded
       // range before transferring it to the worker so the cache stays intact.
+      const benchmarkMetadata = {
+        sourceUrl: loader._gltfResource.url,
+        bufferViewId: loader._bufferViewId,
+        inputBytes: bufferViewTypedArray.byteLength,
+      };
+      if (typeof TaskProcessor._benchmarkTiming === "function") {
+        TaskProcessor._recordBenchmarkTiming(
+          decodeMeshoptTaskProcessor,
+          "inputCopyStarted",
+          { benchmarkMetadata },
+        );
+      }
       bufferViewTypedArray = new Uint8Array(bufferViewTypedArray);
+      if (typeof TaskProcessor._benchmarkTiming === "function") {
+        TaskProcessor._recordBenchmarkTiming(
+          decodeMeshoptTaskProcessor,
+          "inputCopyCompleted",
+          { benchmarkMetadata },
+        );
+      }
     }
 
     // Unload the buffer
@@ -187,6 +211,11 @@ async function loadResources(loader) {
           filter: loader._meshoptFilter,
         },
         [loader._typedArray.buffer],
+        {
+          sourceUrl: loader._gltfResource.url,
+          bufferViewId: loader._bufferViewId,
+          inputBytes: loader._typedArray.byteLength,
+        },
       );
 
       if (loader.isDestroyed()) {

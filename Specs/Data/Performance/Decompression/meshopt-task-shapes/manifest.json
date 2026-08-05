@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Matched Meshopt task-shape corpus for public Model.fromGltfAsync measurements.",
+  "encoder": {
+    "package": "meshoptimizer",
+    "version": "1.2.0",
+    "integrity": "sha512-davRZeIJbxJrE24cwQle7ZDsxjdk/OphNOV83oX+efQinyoHY9Jcyz3MHbaoG0qySZajldGztNZ1RN/T19PZsg=="
+  },
+  "generator": {
+    "path": "Tools/benchmark/decompression/createMeshoptTaskShapeCorpus.mjs",
+    "sha256": "e6c0b5d68aa8a053abea455b2949a0a9796425f1eb704bdc1a3cd1951363145d",
+    "version": "1.0.0"
+  },
+  "runtime": {
+    "nodeVersion": "v22.18.0",
+    "os": "darwin",
+    "arch": "arm64",
+    "packageManager": "npm"
+  },
+  "study": {
+    "compressedBytesTarget": 9540,
+    "decodedBytesRange": [
+      19840,
+      21168
+    ],
+    "viewCounts": [
+      1,
+      10,
+      60,
+      200
+    ],
+    "primitiveCount": 200,
+    "compression": "KHR_meshopt_compression ATTRIBUTES/NONE"
+  },
+  "fixtures": [
+    {
+      "id": "meshopt-task-shape-1-view",
+      "label": "1 compressed buffer view",
+      "gltf": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-1-view.gltf",
+      "gltfSha256": "e63f13c63ce677c78118afb6063dc74d23550d2c29dfc3611765bdcc712ce615",
+      "binary": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-1-view.bin",
+      "binarySha256": "a995153a54e5825430b7c67d394c30a1354c6c1b0c7dc97ac1cabeace244bb19",
+      "binarySizeBytes": 9546,
+      "construction": {
+        "compressedBytes": 9540,
+        "decodedAttributeBytes": 21168,
+        "uniqueCompressedViews": 1,
+        "primitiveCount": 200,
+        "primitiveToUniqueViewMapping": "primitiveIndex % uniqueCompressedViews",
+        "specGroups": [
+          {
+            "recipe": "triangle",
+            "count": 378,
+            "byteStride": 56,
+            "expectedCompressedBytes": 9540,
+            "instances": 1
+          }
+        ],
+        "decodedAttributeSha256": "96f040f2b90c6f84312cba56884b0a3259cdb87a0f3f3e2fb0246df5844198a3"
+      },
+      "constructionSha256": "e487728d119331ae203054bd369d2dd867d7c27ff191e98f486d54da8ce418a0"
+    },
+    {
+      "id": "meshopt-task-shape-10-view",
+      "label": "10 compressed buffer views",
+      "gltf": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-10-view.gltf",
+      "gltfSha256": "f16ae470531c0ee3c9852ba8dcd953518f5057a005a25a775dd75f5c3eab484e",
+      "binary": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-10-view.bin",
+      "binarySha256": "ec8fe5d60a3fe5d745207c351e8b806fd60c295e88a216bd7fdc56859910f1ac",
+      "binarySizeBytes": 9546,
+      "construction": {
+        "compressedBytes": 9540,
+        "decodedAttributeBytes": 19840,
+        "uniqueCompressedViews": 10,
+        "primitiveCount": 200,
+        "primitiveToUniqueViewMapping": "primitiveIndex % uniqueCompressedViews",
+        "specGroups": [
+          {
+            "recipe": "ramp",
+            "count": 32,
+            "byteStride": 80,
+            "expectedCompressedBytes": 800,
+            "instances": 4
+          },
+          {
+            "recipe": "grid",
+            "count": 24,
+            "byteStride": 80,
+            "expectedCompressedBytes": 875,
+            "instances": 1
+          },
+          {
+            "recipe": "ramp",
+            "count": 128,
+            "byteStride": 12,
+            "expectedCompressedBytes": 1093,
+            "instances": 5
+          }
+        ],
+        "decodedAttributeSha256": "b33fba49533550c4d8e1d1ae919efbfb90140c3ccfd1a95db99f42c741c5cc85"
+      },
+      "constructionSha256": "4c0b5df4837919fad39fa71e18cae16ad86f9bc7889ac5b2949c9ef3ae90d21b"
+    },
+    {
+      "id": "meshopt-task-shape-60-view",
+      "label": "60 compressed buffer views",
+      "gltf": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-60-view.gltf",
+      "gltfSha256": "0254eaf8beb46647290ed5bf3712367d5a26737e7df47166994afa5b796a61f2",
+      "binary": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-60-view.bin",
+      "binarySha256": "39d42a021fadf1fdf36495ffb2c40e58efe5319504ee24fde1de0bb1bf4d4b43",
+      "binarySizeBytes": 9546,
+      "construction": {
+        "compressedBytes": 9540,
+        "decodedAttributeBytes": 20400,
+        "uniqueCompressedViews": 60,
+        "primitiveCount": 200,
+        "primitiveToUniqueViewMapping": "primitiveIndex % uniqueCompressedViews",
+        "specGroups": [
+          {
+            "recipe": "grid",
+            "count": 17,
+            "byteStride": 20,
+            "expectedCompressedBytes": 159,
+            "instances": 60
+          }
+        ],
+        "decodedAttributeSha256": "69fbfe607efef7809fcea30594d8333daf832b3cb9593be204ba4d789455d07f"
+      },
+      "constructionSha256": "281aab7e8fd986bec663a4ec186d263aaf8f5b81ff5a67b55cb21a341e780037"
+    },
+    {
+      "id": "meshopt-task-shape-200-view",
+      "label": "200 compressed buffer views",
+      "gltf": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-200-view.gltf",
+      "gltfSha256": "ed1a0ce92a0779c8e3ad8fd621548e1728903436d36fed19532aa5c477453b9a",
+      "binary": "Specs/Data/Performance/Decompression/meshopt-task-shapes/meshopt-task-shape-200-view.bin",
+      "binarySha256": "3bb2971a7c051b8b58be0fca57d2135b63dd7a5f7a67473b6657f84755331f9c",
+      "binarySizeBytes": 9546,
+      "construction": {
+        "compressedBytes": 9540,
+        "decodedAttributeBytes": 20580,
+        "uniqueCompressedViews": 200,
+        "primitiveCount": 200,
+        "primitiveToUniqueViewMapping": "primitiveIndex % uniqueCompressedViews",
+        "specGroups": [
+          {
+            "recipe": "repeat",
+            "count": 7,
+            "byteStride": 12,
+            "expectedCompressedBytes": 45,
+            "instances": 65
+          },
+          {
+            "recipe": "repeat",
+            "count": 7,
+            "byteStride": 16,
+            "expectedCompressedBytes": 49,
+            "instances": 135
+          }
+        ],
+        "decodedAttributeSha256": "960aab839d4cf82d84d4d39ee4fe6356b34e41a026f5518c5c115c0ce078f708"
+      },
+      "constructionSha256": "426822326297b98e06a0d4710fb0a19358351c21973ea0355b7d816690f7eae2"
+    }
+  ]
+}
