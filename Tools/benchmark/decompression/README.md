@@ -1,5 +1,37 @@
 # Public decompression/loading benchmark
 
+## Confirmatory candidate/base comparison
+
+`benchmark-decompression:confirmatory` is the final comparison path. Unlike
+the older benchmark described below, it uses one neutral page and runner,
+loads each variant's release ESM `packages/engine/Build/Minified/index.js`,
+and serves its `Build/Workers` files separately. It never uses
+`Build/CesiumUnminified/Cesium.js`, embedded `CESIUM_WORKERS`, or the
+benchmark-only TaskProcessor lifecycle hook.
+
+```sh
+npm run benchmark-decompression:confirmatory -- \
+  --candidate /Users/benpolinsky/source/cesium \
+  --baseline /path/to/clean-baseline
+```
+
+It requires clean worktrees at the supplied candidate/base refs (defaults are
+the audited refs) and each release ESM entry point, and runs only
+`meshopt-model-unit-square`, `meshopt-model-meshopt-cube-test`, and
+`spz-tiles-tower`. It records 12 fixed paired blocks: six candidate-first and
+six baseline-first. Hashing is completed before browser timing starts.
+SPZ samples observe the identical 1.5-second window beginning immediately
+before the public call; the report has clipped long-task entries and
+within-window frame gaps, never a total-long-task-duration claim. Meshopt
+results intentionally make no responsiveness claim.
+
+The remainder of this document describes the older combined-build exploratory
+path. Its warm/cache and TaskProcessor-hook experiments are not confirmatory
+candidate/base evidence and must not be summarized as cold-cache or
+production-path results. The report explicitly records a missing baseline
+decoder worker as absent: the baseline does not require separately built
+decoder-worker artifacts.
+
 This benchmark measures Cesium's normal public loading APIs in Chromium. It
 does not call `TaskProcessor`, decoder workers, internal loaders, or construct
 glTF objects. The scenario manifest points at committed Cesium test assets, and
