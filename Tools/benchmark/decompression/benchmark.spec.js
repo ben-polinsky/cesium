@@ -22,6 +22,17 @@ import {
   summarizeSetupTimings,
 } from "./benchmark-utils.mjs";
 
+// Playwright controller for the public 14-asset sweep.
+//
+// browserRunner.js owns browser-side loading and the public-ready timer; this
+// file owns process/context isolation, randomized asset order, diagnostics,
+// report assembly, and output. The default run collects 10 cold and 30 warm
+// samples for every scenario in scenarios.json.
+//
+// Cold means one fresh Chromium process and profile for each asset sample.
+// Warm means every asset loads once in one shared context before its measured
+// samples. Browser startup and page setup are recorded separately, never added
+// to the public API timing reported by the sweep.
 const viewport = { width: 1280, height: 720 };
 const benchmarkPage = "/Tools/benchmark/decompression/benchmark.html";
 const benchmarkPageTimeoutMs = 120000;
@@ -36,6 +47,8 @@ function stringOption(name, fallback) {
   return typeof value === "string" && value.length > 0 ? value : fallback;
 }
 
+// run.mjs passes its CLI options through environment variables because
+// Playwright launches this test as a child process.
 function selectedOptions() {
   const selectedScenarios = (process.env.BENCHMARK_SCENARIOS ?? "")
     .split(",")
@@ -132,6 +145,8 @@ function requestIdentity(request) {
   };
 }
 
+// Preserve browser failures next to the sample that observed them. A benchmark
+// failure is useful evidence; it should not collapse into a generic timeout.
 function captureDiagnostics(context, page) {
   const diagnostics = {
     pageErrors: [],
@@ -206,6 +221,8 @@ function browserScenario(scenario) {
   };
 }
 
+// These page.evaluate calls cross the Node/browser boundary. The browser module
+// exposes the named functions on globalThis only for this controller.
 async function evaluateScenario(page, scenario) {
   const response = await page.evaluate(async (browserScenarioValue) => {
     try {
@@ -301,6 +318,8 @@ function artifactKind(url) {
   return undefined;
 }
 
+// Record which decoder bundles and workers the browser actually fetched. This
+// makes a report auditable when generated build output is not tracked by Git.
 function captureArtifacts(context) {
   const responses = new Map();
   const onResponse = (response) => {
@@ -366,6 +385,9 @@ async function installGeeRoutes(page) {
   });
 }
 
+// An execution is one browser context/page with its diagnostics, build
+// artifacts, and rendering identity attached. Cold samples get one execution
+// each; the warm sweep deliberately shares one execution after warmup.
 async function openExecution(browser, baseURL, scenarios, setup) {
   const context = await browser.newContext({
     viewport,
@@ -502,6 +524,8 @@ function buildRun(
   };
 }
 
+// Keep the result shape stable even after a setup or page failure, so summaries
+// can exclude failed samples while the raw report preserves the failure cause.
 function buildFailedRun({
   execution,
   executionId,
@@ -632,6 +656,9 @@ function cachePolicyForState(state) {
   };
 }
 
+// Optional preload and paired-comparison states follow. They are part of the
+// original investigation harness; the normal 14-asset matrix selects only
+// cold,warm.
 function prewarmScenarioFor(scenario, prewarmScenarios) {
   const candidates = prewarmScenarios.filter(
     (candidate) => candidate.compression === scenario.compression,
@@ -656,6 +683,8 @@ async function runWarmSamples({
   sampleOrder,
   executionSetups,
 }) {
+  // Warm once through the same public APIs, then retain that context for all
+  // measured warm samples so HTTP, Cesium, worker, and WASM state remain warm.
   const setupStartedAt = performance.now();
   const browser = await chromium.launch({ headless: !options.headed });
   const browserLaunchCompletedAt = performance.now();
@@ -755,6 +784,8 @@ async function runColdSamples({
   sampleOrder,
   executionSetups,
 }) {
+  // A cold sample owns its browser process. Closing it after one asset prevents
+  // profile, resource cache, worker, and WASM state from leaking forward.
   const artifacts = [];
   for (
     let sampleIndex = 0;
@@ -859,6 +890,8 @@ async function runPairedColdSamples({
   sampleOrder,
   executionSetups,
 }) {
+  // This diagnostic state randomizes primary/comparison order within each
+  // scenario pair. It is not used by the default cold/warm matrix.
   const artifacts = [];
   const variants = [
     { id: "primary", url: baseURL, primary: true },
@@ -1052,6 +1085,8 @@ async function runPrewarmedSamples({
   sampleOrder,
   executionSetups,
 }) {
+  // This diagnostic state intentionally warms a related public fixture before
+  // timing the target. Its prewarm timing remains separate from target timing.
   const artifacts = [];
   for (
     let sampleIndex = 0;
@@ -1168,6 +1203,8 @@ async function runExplicitPreloadSamples({
   sampleOrder,
   executionSetups,
 }) {
+  // Worker/probe, worker/WASM, and HTTP-asset preload experiments share this
+  // loop. Their preload and target timings are reported as separate fields.
   const artifacts = [];
   const preloadKind = preloadKindByState[state];
   for (
@@ -1260,6 +1297,8 @@ function publicScenarioIdentity(scenario) {
   };
 }
 
+// The report is written both on success and failure, so partial evidence and
+// diagnostics survive an interrupted or failed benchmark run.
 async function writeResults(output, value) {
   await mkdir(path.dirname(output), { recursive: true });
   await writeFile(output, `${JSON.stringify(value, null, 2)}\n`, "utf8");
@@ -1378,6 +1417,9 @@ function consoleTable(document) {
 test("runs public Cesium decompression/loading benchmarks", async ({
   baseURL,
 }) => {
+  // Assemble all provenance before launching samples. The final report embeds
+  // the selected states, cache contract, environment, order, raw runs, and
+  // summaries so its numbers can be reviewed without re-running the test.
   const options = selectedOptions();
   const scenarios = await loadScenarios(options.selectedScenarios);
   const prewarmScenarios = options.states.includes("prewarmed")
