@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Derived public-API SPZ benchmark assets for the Cesium3DTileset path.",
+  "generator": {
+    "path": "Tools/benchmark/decompression/createSpzGlb.mjs",
+    "input": "A complete source SPZ file is embedded byte-for-byte in the GLB BIN chunk.",
+    "wrapper": "A minimal glTF 2.0 Gaussian-splat primitive references the embedded SPZ buffer through KHR_gaussian_splatting_compression_spz_2 and is served by a one-tile 3D Tiles manifest."
+  },
+  "assets": [
+    {
+      "id": "hornedlizard",
+      "wrapper": {
+        "path": "hornedlizard.spz.glb",
+        "bytes": 18145628,
+        "sha256": "936bd212ed8f1fd058afa7f43cc5713375efbe3fb57ca3e7b94fd85ea5d650f0"
+      },
+      "tileset": {
+        "path": "hornedlizard.tileset.json",
+        "sha256": "aab7f50b8b8f67a2427ab4594967c14f08c07a64301335c1771c3348dbe9a747"
+      },
+      "source": {
+        "repository": "https://github.com/nianticlabs/spz",
+        "commit": "3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9",
+        "path": "samples/hornedlizard.spz",
+        "url": "https://github.com/nianticlabs/spz/blob/3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9/samples/hornedlizard.spz",
+        "bytes": 18143098,
+        "sha256": "a076ca6aeb9f1a8fe52526f4a7c381fe8fffec60c0d7eb64b45532189b64bc6a",
+        "license": "MIT",
+        "licenseFile": "provenance/nianticlabs-spz-LICENSE",
+        "provenanceFile": "provenance/nianticlabs-spz-README.md"
+      },
+      "spz": {
+        "version": 2,
+        "gaussianCount": 786233,
+        "shDegree": 3
+      }
+    },
+    {
+      "id": "racoonfamily",
+      "wrapper": {
+        "path": "racoonfamily.spz.glb",
+        "bytes": 24205492,
+        "sha256": "82f0ab74862941d217de100cc877f1166f08128dc9b9490b2beb263f598828ed"
+      },
+      "tileset": {
+        "path": "racoonfamily.tileset.json",
+        "sha256": "2bce256f36da62d98b6dbb51a78a749f429101de41cd366953fc5950cfb3b32d"
+      },
+      "source": {
+        "repository": "https://github.com/nianticlabs/spz",
+        "commit": "3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9",
+        "path": "samples/racoonfamily.spz",
+        "url": "https://github.com/nianticlabs/spz/blob/3720f71d61bb80644d3a3a7ebb928c5a51d6c1e9/samples/racoonfamily.spz",
+        "bytes": 24202962,
+        "sha256": "2e068d893730955c09aee324ff170c559f71c0e8758c1b14c3811a5969333cfe",
+        "license": "MIT",
+        "licenseFile": "provenance/nianticlabs-spz-LICENSE",
+        "provenanceFile": "provenance/nianticlabs-spz-README.md"
+      },
+      "spz": {
+        "version": 2,
+        "gaussianCount": 932560,
+        "shDegree": 3
+      }
+    },
+    {
+      "id": "innenstadt",
+      "wrapper": {
+        "path": "innenstadt.spz.glb",
+        "bytes": 15931320,
+        "sha256": "58a7280db5554a09b0d7b1a2b07486d7b1b0dbaddbfacd81e5e15a94dca0a8db"
+      },
+      "tileset": {
+        "path": "innenstadt.tileset.json",
+        "sha256": "59346ca32bc2a4716694c2a8766bc754b9284d2c897477425114e9ba9a78ec7b"
+      },
+      "source": {
+        "repository": "https://github.com/gkvoelkl/js-3dgs",
+        "commit": "08adc53461c331b00ab3f96957f985c3e4c491d2",
+        "path": "scans/innenstadt.spz",
+        "url": "https://github.com/gkvoelkl/js-3dgs/blob/08adc53461c331b00ab3f96957f985c3e4c491d2/scans/innenstadt.spz",
+        "bytes": 15928789,
+        "sha256": "d04431b594e70729eae6ecbf7777d055e83d750425e6172bc978c4c9f585dc72",
+        "license": "MIT",
+        "licenseFile": "provenance/gkvoelkl-js-3dgs-LICENSE",
+        "provenanceFile": "provenance/gkvoelkl-js-3dgs-README.md"
+      },
+      "spz": {
+        "version": 2,
+        "gaussianCount": 683344,
+        "shDegree": 3
+      }
+    }
+  ]
+}

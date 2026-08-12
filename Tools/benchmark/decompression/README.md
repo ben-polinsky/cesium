@@ -1,25 +1,52 @@
 # Decoder worker benchmarks
 
-These two benchmarks evaluate moving Meshopt and SPZ decoding from the main
-thread to workers. Both compare the PR head
-`7e620929194becfe04c5ad019c030159cfe0aa34` with its actual base
-`6d5d8b1f0725b6f831b336463f4b11c98023427b`.
+The primary benchmark is the **14-asset public-API sweep**. It measures
+Cesium's public loading APIs across Draco, KTX2, Meshopt, SPZ, KMZ, and Google
+Earth Enterprise content.
 
-| Benchmark            | What it covers                                                                                                    | Command                                                                        |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| Fixture confirmation | Cold first-use readiness for two Meshopt models and an SPZ tower; SPZ frame continuity                            | `npm run benchmark-decompression:fixtures -- --candidate PATH --baseline PATH` |
-| Production route     | Fresh-context Re:Earth Meshopt 3D Tiles route, including readiness, frame gaps, long tasks, and requested content | `npm run benchmark-decompression:reearth -- --candidate PATH --baseline PATH`  |
+| Benchmark                       | Coverage                                                                                   | Command                                                                        |
+| ------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| 14-asset sweep                  | 10 cold and 30 warm `publicReady` samples per variant for all fixtures in `scenarios.json` | `npm run benchmark-decompression:full`                                         |
+| Exact-base fixture confirmation | 12 counterbalanced cold pairs for two Meshopt fixtures and the SPZ tower                   | `npm run benchmark-decompression:fixtures -- --candidate PATH --baseline PATH` |
+| Re:Earth production route       | Fresh-context Meshopt 3D Tiles route with readiness and responsiveness observations        | `npm run benchmark-decompression:reearth -- --candidate PATH --baseline PATH`  |
 
-## Fixture confirmation
+## 14-asset sweep
 
-`confirmatory/run.mjs` rebuilds both clean worktrees, alternates candidate-first
-and baseline-first order across 12 pairs, and uses a fresh browser context for
-every sample. The shared browser page starts timing immediately before calling
-Cesium's public loading API and stops at public readiness.
+`scenarios.json` is the complete, readable fixture manifest: each row records
+the public API, content files, compression type, and provenance. It includes:
 
-`confirmatory/browser.js` is the browser-side measurement. `utils.mjs` checks
-worktree identity and build freshness. `summarize.mjs` derives paired results
-from the raw report; it does not recompute numbers by hand.
+- three Draco glTF models;
+- two Draco point clouds;
+- KTX2, Meshopt cube, and Meshopt unit-square models;
+- four SPZ 3D Tiles fixtures;
+- KMZ and GEE metadata.
+
+`benchmark.spec.js` creates the isolated browser samples. `browserRunner.js`
+contains the timed public Cesium loading operations. `benchmark-utils.mjs`
+validates scenarios, records environment identity, controls sample setup, and
+summarizes raw results. `compare.mjs` compares two retained reports.
+
+```sh
+npm run benchmark-decompression:full -- \
+  --output Build/Performance/Decompression/full-sweep.json
+npm run benchmark-decompression:full:compare -- \
+  Build/Performance/Decompression/full-sweep.json
+```
+
+Cold samples use a fresh browser context. Warm samples reuse the prepared
+benchmark page after a cold run. The timer starts immediately before Cesium's
+public loader call and stops at public readiness.
+
+The retained full sweep uses baseline `eab72bb` and candidate `7e62092`.
+The exact-base fixture confirmation below separately compares the PR base
+`6d5d8b1` with `7e62092`.
+
+## Exact-base fixture confirmation
+
+`confirmatory/run.mjs` rebuilds both clean worktrees, alternates
+candidate-first and baseline-first order across 12 pairs, and uses a fresh
+browser context for every sample. `summarize.mjs` derives paired results from
+the raw report.
 
 ```sh
 npm run benchmark-decompression:fixtures -- \
@@ -29,15 +56,11 @@ npm run benchmark-decompression:fixtures:summary -- \
   Build/Performance/Decompression/confirmatory.json
 ```
 
-The fixture benchmark measures first compressed-asset use after the engine has
-loaded. It is not a total page-startup measurement.
-
-## Production route
+## Re:Earth production route
 
 `production-route/run.mjs` applies the same clean-worktree and paired-order
-rules to a fixed Re:Earth Buildings route. `browser.js` loads the production
-tileset through Cesium and records route readiness plus browser responsiveness.
-Each run receives a fresh browser context.
+rules to a fixed Re:Earth Buildings route. It is a route measurement, not a
+full traversal of the tileset.
 
 ```sh
 npm run benchmark-decompression:reearth -- \
@@ -45,21 +68,13 @@ npm run benchmark-decompression:reearth -- \
   --baseline ../cesium-baseline
 ```
 
-This is a route test, not a full traversal of the entire Re:Earth tileset.
-
 ## Checks
 
 ```sh
 npm run benchmark-decompression:test
 ```
 
-The tests cover exact-reference defaults, clean build options, counterbalanced
-order, path containment, and paired summary calculations.
-
-## Deliberately excluded
-
-This branch excludes exploratory preload, synthetic corpus, ion/SPZ diagnostic,
-and raw-result artifacts. The complete investigation, including the older
-14-asset cold/warm sweep, is preserved on
-`bdp/issue-13617-performance-benchmarks-archive`. Its sweep used a different
-baseline and is not PR-attribution evidence.
+The repository retains the sweep runner and fixtures, the exact-base
+confirmation, and the production-route runner. Raw captures, generators, and
+exploratory preload and ion experiments remain on
+`bdp/issue-13617-performance-benchmarks-archive`.
