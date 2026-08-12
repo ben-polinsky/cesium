@@ -28,11 +28,10 @@ load each asset once through the same public API, then retain that browser
 context for the measured samples. The timer starts at the public loader call
 and ends when that API's readiness condition is met.
 
-## Other benchmarks
+## Re:Earth route
 
-`confirmatory/` is the separate exact-base three-fixture confirmation.
-`production-route/` is the separate Re:Earth route test. Neither changes the
-14-asset sweep.
+`production-route/` is the separate Re:Earth route test. It does not change
+the 14-asset sweep.
 
 The archive branch retains raw captures, generators, and unrelated exploratory
 experiments; they are deliberately not part of this review surface.
