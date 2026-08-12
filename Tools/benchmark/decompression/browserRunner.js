@@ -4,6 +4,8 @@ if (!Cesium) {
   throw new Error("Cesium production bundle was not loaded.");
 }
 
+// Page configuration is supplied by the Playwright harness. Keeping these as
+// URL parameters lets the same browser page serve all sample states.
 const statusElement = document.getElementById("status");
 const defaultReadyTimeoutMs = 120000;
 const decoderWorkerByCompression = {
@@ -54,6 +56,9 @@ const readyTimeoutMs = Math.max(
   numberSearchParam("readyTimeoutMs", defaultReadyTimeoutMs),
 );
 
+// The lifecycle collector is optional instrumentation around TaskProcessor.
+// It records decoder phases for diagnostics; publicReady remains the reported
+// end-to-end metric for the cold/warm sweep.
 function estimatePerformanceNowResolution() {
   const deltas = [];
   let previous = performance.now();
@@ -108,6 +113,9 @@ function firstWorkerTiming(events, phase, timingField, started) {
   return null;
 }
 
+// TaskProcessor reports events for every worker. Keep only the codec worker
+// used by this scenario, then normalize worker-clock timestamps to the public
+// loading timer started below.
 function createDecoderLifecycleCollector(scenario) {
   const decoderWorker = decoderWorkerByCompression[scenario.compression];
   const events = [];
@@ -248,6 +256,8 @@ function disabledDecoderLifecycle(scenario, reason) {
   };
 }
 
+// Main-thread diagnostics are retained beside readiness timing so a slower or
+// faster public-ready result can be inspected for frame and long-task effects.
 function quantile(values, fraction) {
   if (values.length === 0) {
     return null;
@@ -318,6 +328,9 @@ async function measureArrayBufferMemory() {
   };
 }
 
+// Start observers before the public API call, but clip their reported window
+// to the call's start/end timestamps. Sampling is best-effort because Chrome
+// may not expose measureUserAgentSpecificMemory in every environment.
 function createMainThreadMonitor() {
   const longTaskEntries = [];
   let longTaskSupported = false;
@@ -518,6 +531,9 @@ function collectResourceTiming(scenario, started, finished) {
   };
 }
 
+// Every asset type uses the same minimal widget configuration and manual
+// render loop. This avoids unrelated globe, imagery, and default-loop work
+// affecting the readiness condition.
 function createWidget() {
   const container = document.getElementById("cesiumContainer");
   assert(container, "benchmark container is missing");
@@ -546,6 +562,9 @@ async function waitForWidget(widget, predicate, description) {
   widget.render();
 }
 
+// These loaders define the public readiness boundary for each API represented
+// in scenarios.json. The timer starts immediately before the public call and
+// ends only after the documented renderable/loaded condition is true.
 function viewBoundingSphere(widget, object) {
   if (object.boundingSphere) {
     widget.camera.viewBoundingSphere(
@@ -716,6 +735,9 @@ async function runGeeScenario(scenario) {
   };
 }
 
+// This is the browser entry point called by benchmark.spec.js. It dispatches
+// to the matching public Cesium API, then attaches diagnostics to the same
+// public-ready interval without changing that interval's start or end.
 async function runScenario(scenario) {
   statusElement.textContent = `Running ${scenario.id}...`;
   const timerResolutionMs = estimatePerformanceNowResolution();
@@ -788,6 +810,8 @@ async function runScenario(scenario) {
   };
 }
 
+// The following helpers support optional preload experiment states. The normal
+// 14-asset cold/warm sweep does not call runPreload.
 function codecWorkerPreloader(compression) {
   return compression === "draco"
     ? Cesium.DracoLoader._preloadWorkerForBenchmark
@@ -915,6 +939,8 @@ async function runPreload(scenario, kind) {
   };
 }
 
+// Expose only the two operations used by the Node/Playwright harness after the
+// module finishes loading.
 globalThis.decompressionBenchmarkReady = true;
 globalThis.runCesiumDecompressionScenario = runScenario;
 globalThis.runCesiumDecompressionPreload = runPreload;
