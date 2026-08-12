@@ -1,88 +1,38 @@
-# Decoder worker benchmarks
+# 14-asset decompression sweep
 
-The primary benchmark is the **14-asset public-API sweep**. It measures
-Cesium's public loading APIs across Draco, KTX2, Meshopt, SPZ, KMZ, and Google
-Earth Enterprise content.
+This is the unchanged runner that produced the 14-asset cold/warm matrix.
+The executable files match
+`bdp/issue-13617-performance-benchmarks-archive` byte-for-byte.
 
-| Benchmark                       | Coverage                                                                                   | Command                                                                        |
-| ------------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
-| 14-asset sweep                  | 10 cold and 30 warm `publicReady` samples per variant for all fixtures in `scenarios.json` | `npm run benchmark-decompression:full`                                         |
-| Exact-base fixture confirmation | 12 counterbalanced cold pairs for two Meshopt fixtures and the SPZ tower                   | `npm run benchmark-decompression:fixtures -- --candidate PATH --baseline PATH` |
-| Re:Earth production route       | Fresh-context Meshopt 3D Tiles route with readiness and responsiveness observations        | `npm run benchmark-decompression:reearth -- --candidate PATH --baseline PATH`  |
+## Review order
 
-## 14-asset sweep
+1. `scenarios.json` — the 14 assets, public APIs, runtime files, and provenance.
+2. `run.mjs` — command-line options and Playwright invocation.
+3. `benchmark.spec.js` — sample lifecycle: 10 cold samples and 30 warm samples.
+4. `browserRunner.js` — the public Cesium loading call and readiness condition.
+5. `benchmark-utils.mjs` — validation, report metadata, sample ordering, and summaries.
+6. `compare.mjs` — baseline/candidate report comparison.
+7. `benchmark-utils.test.mjs` — the runner's focused checks.
 
-`full-sweep/scenarios.json` is the complete, readable fixture manifest: each
-row records the public API, content files, compression type, and provenance. It
-includes:
-
-- three Draco glTF models;
-- two Draco point clouds;
-- KTX2, Meshopt cube, and Meshopt unit-square models;
-- four SPZ 3D Tiles fixtures;
-- KMZ and GEE metadata.
-
-`full-sweep/run.mjs` is the complete runner: it creates a new Chromium process
-for every cold sample, prepares one shared context for warm samples, and writes
-the raw measurements. `full-sweep/browser.js` contains the timed public Cesium
-loading operations. `full-sweep/summarize.mjs` compares two reports by median.
+## Run
 
 ```sh
-# Run once from the baseline worktree.
-npm run benchmark-decompression:full -- \
-  --output /tmp/baseline-full-sweep.json
-
-# Run once from the candidate worktree.
-npm run benchmark-decompression:full -- \
-  --output /tmp/candidate-full-sweep.json
-
-# Compare the two reports.
+npm run benchmark-decompression:full
 npm run benchmark-decompression:full:compare -- \
-  /tmp/baseline-full-sweep.json /tmp/candidate-full-sweep.json
+  baseline.json candidate.json
+npm run benchmark-decompression:full:test
 ```
 
-Cold samples use a fresh browser context. Warm samples reuse the prepared
-benchmark page after a cold run. The timer starts immediately before Cesium's
-public loader call and stops at public readiness.
+Cold samples use a fresh Chromium process and ephemeral profile. Warm samples
+load each asset once through the same public API, then retain that browser
+context for the measured samples. The timer starts at the public loader call
+and ends when that API's readiness condition is met.
 
-The retained full sweep uses baseline `eab72bb` and candidate `7e62092`.
-The exact-base fixture confirmation below separately compares the PR base
-`6d5d8b1` with `7e62092`.
+## Other benchmarks
 
-## Exact-base fixture confirmation
+`confirmatory/` is the separate exact-base three-fixture confirmation.
+`production-route/` is the separate Re:Earth route test. Neither changes the
+14-asset sweep.
 
-`confirmatory/run.mjs` rebuilds both clean worktrees, alternates
-candidate-first and baseline-first order across 12 pairs, and uses a fresh
-browser context for every sample. `summarize.mjs` derives paired results from
-the raw report.
-
-```sh
-npm run benchmark-decompression:fixtures -- \
-  --candidate ../cesium-candidate \
-  --baseline ../cesium-baseline
-npm run benchmark-decompression:fixtures:summary -- \
-  Build/Performance/Decompression/confirmatory.json
-```
-
-## Re:Earth production route
-
-`production-route/run.mjs` applies the same clean-worktree and paired-order
-rules to a fixed Re:Earth Buildings route. It is a route measurement, not a
-full traversal of the tileset.
-
-```sh
-npm run benchmark-decompression:reearth -- \
-  --candidate ../cesium-candidate \
-  --baseline ../cesium-baseline
-```
-
-## Checks
-
-```sh
-npm run benchmark-decompression:test
-```
-
-The repository retains the sweep runner and fixtures, the exact-base
-confirmation, and the production-route runner. Raw captures, generators, and
-exploratory preload and ion experiments remain on
-`bdp/issue-13617-performance-benchmarks-archive`.
+The archive branch retains raw captures, generators, and unrelated exploratory
+experiments; they are deliberately not part of this review surface.
