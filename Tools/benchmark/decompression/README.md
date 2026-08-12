@@ -12,8 +12,9 @@ Earth Enterprise content.
 
 ## 14-asset sweep
 
-`scenarios.json` is the complete, readable fixture manifest: each row records
-the public API, content files, compression type, and provenance. It includes:
+`full-sweep/scenarios.json` is the complete, readable fixture manifest: each
+row records the public API, content files, compression type, and provenance. It
+includes:
 
 - three Draco glTF models;
 - two Draco point clouds;
@@ -21,16 +22,23 @@ the public API, content files, compression type, and provenance. It includes:
 - four SPZ 3D Tiles fixtures;
 - KMZ and GEE metadata.
 
-`benchmark.spec.js` creates the isolated browser samples. `browserRunner.js`
-contains the timed public Cesium loading operations. `benchmark-utils.mjs`
-validates scenarios, records environment identity, controls sample setup, and
-summarizes raw results. `compare.mjs` compares two retained reports.
+`full-sweep/run.mjs` is the complete runner: it creates a new Chromium process
+for every cold sample, prepares one shared context for warm samples, and writes
+the raw measurements. `full-sweep/browser.js` contains the timed public Cesium
+loading operations. `full-sweep/summarize.mjs` compares two reports by median.
 
 ```sh
+# Run once from the baseline worktree.
 npm run benchmark-decompression:full -- \
-  --output Build/Performance/Decompression/full-sweep.json
+  --output /tmp/baseline-full-sweep.json
+
+# Run once from the candidate worktree.
+npm run benchmark-decompression:full -- \
+  --output /tmp/candidate-full-sweep.json
+
+# Compare the two reports.
 npm run benchmark-decompression:full:compare -- \
-  Build/Performance/Decompression/full-sweep.json
+  /tmp/baseline-full-sweep.json /tmp/candidate-full-sweep.json
 ```
 
 Cold samples use a fresh browser context. Warm samples reuse the prepared

@@ -16,6 +16,8 @@ const contentTypes = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
   ".json": "application/json",
+  ".kmz": "application/vnd.google-earth.kmz",
+  ".pnts": "application/octet-stream",
   ".wasm": "application/wasm",
 };
 
