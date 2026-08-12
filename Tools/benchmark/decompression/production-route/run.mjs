@@ -8,7 +8,7 @@ import {
   buildVariant,
   requireArtifacts,
   verifyVariant,
-} from "../confirmatory/utils.mjs";
+} from "../shared/worktree-utils.mjs";
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const defaultCandidateRef = "7e620929194becfe04c5ad019c030159cfe0aa34";
