@@ -6,7 +6,7 @@ import {
   pairScenario,
   quantile,
   summarizeMetric,
-} from "./confirmatory-summary.mjs";
+} from "./summarize.mjs";
 
 const runs = [
   { block: 0, order: "candidate-first", variant: "candidate", scenarioId: "s", publicReadyMs: 30 },

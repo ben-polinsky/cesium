@@ -3,13 +3,19 @@ import { createHash } from "node:crypto";
 import { access, readFile, rm, stat } from "node:fs/promises";
 import path from "node:path";
 
+// Shared experiment definition and reproducibility checks. This module contains
+// no timing code; it establishes which commits, scenarios, builds, and ordering
+// are valid before the browser is allowed to collect a sample.
+
 // The candidate is the PR head and the baseline is the commit the PR is
 // actually based on. Using fork-main instead of the merge base would fold
 // unrelated model/rendering changes into the measured delta.
-export const defaultCandidateRef =
-  "7e620929194becfe04c5ad019c030159cfe0aa34";
-export const defaultBaselineRef =
-  "6d5d8b1f0725b6f831b336463f4b11c98023427b";
+export const defaultCandidateRef = "7e620929194becfe04c5ad019c030159cfe0aa34";
+export const defaultBaselineRef = "6d5d8b1f0725b6f831b336463f4b11c98023427b";
+
+// These fixtures use Cesium's public loaders and are already committed test
+// data. The two Meshopt models measure first-use readiness; the larger SPZ
+// fixture also provides a long enough decode to observe frame continuity.
 export const scenarios = Object.freeze([
   {
     id: "meshopt-model-unit-square",
@@ -32,7 +38,8 @@ function value(argumentsList, index, name) {
   const argument = argumentsList[index];
   if (argument.startsWith(`${name}=`)) return argument.slice(name.length + 1);
   const result = argumentsList[index + 1];
-  if (!result || result.startsWith("--")) throw new Error(`${name} requires a value`);
+  if (!result || result.startsWith("--"))
+    throw new Error(`${name} requires a value`);
   return result;
 }
 
@@ -53,16 +60,28 @@ export function parseConfirmatoryArguments(argumentsList) {
     if (argument === "--help") options.help = true;
     else if (argument === "--headed") options.headed = true;
     else if (argument === "--skip-build") options.skipBuild = true;
-    else if (argument === "--candidate" || argument.startsWith("--candidate=")) {
+    else if (
+      argument === "--candidate" ||
+      argument.startsWith("--candidate=")
+    ) {
       options.candidate = value(argumentsList, index, "--candidate");
       if (argument === "--candidate") index++;
-    } else if (argument === "--baseline" || argument.startsWith("--baseline=")) {
+    } else if (
+      argument === "--baseline" ||
+      argument.startsWith("--baseline=")
+    ) {
       options.baseline = value(argumentsList, index, "--baseline");
       if (argument === "--baseline") index++;
-    } else if (argument === "--candidate-ref" || argument.startsWith("--candidate-ref=")) {
+    } else if (
+      argument === "--candidate-ref" ||
+      argument.startsWith("--candidate-ref=")
+    ) {
       options.candidateRef = value(argumentsList, index, "--candidate-ref");
       if (argument === "--candidate-ref") index++;
-    } else if (argument === "--baseline-ref" || argument.startsWith("--baseline-ref=")) {
+    } else if (
+      argument === "--baseline-ref" ||
+      argument.startsWith("--baseline-ref=")
+    ) {
       options.baselineRef = value(argumentsList, index, "--baseline-ref");
       if (argument === "--baseline-ref") index++;
     } else if (argument === "--output" || argument.startsWith("--output=")) {
@@ -76,7 +95,11 @@ export function parseConfirmatoryArguments(argumentsList) {
   if (!options.help && (!options.candidate || !options.baseline)) {
     throw new Error("--candidate and --baseline are required");
   }
-  if (!Number.isInteger(options.port) || options.port < 1 || options.port > 65535) {
+  if (
+    !Number.isInteger(options.port) ||
+    options.port < 1 ||
+    options.port > 65535
+  ) {
     throw new Error("--port must be an integer between 1 and 65535");
   }
   return options;
@@ -89,14 +112,14 @@ export function pairedOrders() {
   return Array.from({ length: 12 }, (_, block) => ({
     block,
     order:
-      block % 2 === 0
-        ? ["candidate", "baseline"]
-        : ["baseline", "candidate"],
+      block % 2 === 0 ? ["candidate", "baseline"] : ["baseline", "candidate"],
   }));
 }
 
 function git(root, argumentsList) {
-  return execFileSync("git", ["-C", root, ...argumentsList], { encoding: "utf8" }).trim();
+  return execFileSync("git", ["-C", root, ...argumentsList], {
+    encoding: "utf8",
+  }).trim();
 }
 
 export const requiredArtifacts = Object.freeze([
@@ -151,16 +174,22 @@ export async function requireArtifacts(root, files = requiredArtifacts) {
 }
 
 // Checks worktree identity only. Built artifacts are verified separately, after
-// the rebuild, because the rebuild deletes them first.
+// the rebuild, because the rebuild deletes them first. Requiring a clean
+// worktree also prevents uncommitted product or fixture changes from silently
+// entering only one side of the comparison.
 export async function verifyVariant(root, expectedRef) {
   const resolved = path.resolve(root);
   if (git(resolved, ["status", "--porcelain"]).length !== 0) {
-    throw new Error(`${resolved} is dirty; confirmatory runs require dirty:false`);
+    throw new Error(
+      `${resolved} is dirty; confirmatory runs require dirty:false`,
+    );
   }
   const commit = git(resolved, ["rev-parse", "HEAD"]);
   const expectedCommit = git(resolved, ["rev-parse", expectedRef]);
   if (commit !== expectedCommit) {
-    throw new Error(`${resolved} is at ${commit}, not expected ${expectedRef} (${expectedCommit})`);
+    throw new Error(
+      `${resolved} is at ${commit}, not expected ${expectedRef} (${expectedCommit})`,
+    );
   }
   return { root: resolved, commit, expectedRef, dirty: false };
 }
@@ -185,6 +214,9 @@ export async function hashFiles(root, files) {
   );
 }
 
+// Worker bundles can import sibling chunks emitted by the release build. Walk
+// those relative imports so the report fingerprints the complete candidate
+// worker implementation rather than only its entry module.
 export async function workerArtifactFiles(root, workerFiles) {
   const discovered = new Set(workerFiles);
   const pending = [...workerFiles];
@@ -198,7 +230,9 @@ export async function workerArtifactFiles(root, workerFiles) {
       throw error;
     }
     for (const match of source.matchAll(/from["'](\.\/[^"']+)["']/g)) {
-      const imported = path.posix.normalize(path.posix.join(path.posix.dirname(file), match[1]));
+      const imported = path.posix.normalize(
+        path.posix.join(path.posix.dirname(file), match[1]),
+      );
       if (!discovered.has(imported)) {
         discovered.add(imported);
         pending.push(imported);

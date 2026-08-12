@@ -20,21 +20,33 @@ export function median(values) {
   return quantile(values, 0.5);
 }
 
+// Metric readers deliberately derive responsiveness values from the retained
+// raw observations. This keeps the report auditable and avoids trusting a
+// second set of precomputed values produced during measurement.
 const metrics = Object.freeze({
   publicReadyMs: (run) => run.publicReadyMs,
   maxFrameGapMs: (run) =>
-    run.responsiveness ? Math.max(...run.responsiveness.frameGapsMs) : undefined,
+    run.responsiveness
+      ? Math.max(...run.responsiveness.frameGapsMs)
+      : undefined,
   p95FrameGapMs: (run) =>
-    run.responsiveness ? quantile(run.responsiveness.frameGapsMs, 0.95) : undefined,
+    run.responsiveness
+      ? quantile(run.responsiveness.frameGapsMs, 0.95)
+      : undefined,
   longTaskCount: (run) => run.responsiveness?.longTaskCount,
   longTaskDurationMs: (run) =>
-    run.responsiveness?.longTasks.reduce((sum, task) => sum + task.durationMs, 0),
+    run.responsiveness?.longTasks.reduce(
+      (sum, task) => sum + task.durationMs,
+      0,
+    ),
   gapsOver50Ms: (run) =>
     run.responsiveness?.frameGapsMs.filter((gap) => gap > 50).length,
 });
 
-// Pairs are matched by block, so each delta compares the two variants under
-// the same block's alternating order.
+// Pairs are matched by block, never by array position. Each delta therefore
+// compares candidate and baseline samples collected in the same local portion
+// of the run, reducing sensitivity to browser warming and machine drift.
+// Positive deltas always mean candidate - baseline.
 export function pairScenario(runs, scenarioId, metric) {
   const read = metrics[metric];
   const blocks = new Map();
@@ -42,12 +54,17 @@ export function pairScenario(runs, scenarioId, metric) {
     if (run.scenarioId !== scenarioId) continue;
     const value = read(run);
     if (value === undefined) continue;
-    const pair = blocks.get(run.block) ?? { block: run.block, order: run.order };
+    const pair = blocks.get(run.block) ?? {
+      block: run.block,
+      order: run.order,
+    };
     pair[run.variant] = value;
     blocks.set(run.block, pair);
   }
   return [...blocks.values()]
-    .filter((pair) => pair.candidate !== undefined && pair.baseline !== undefined)
+    .filter(
+      (pair) => pair.candidate !== undefined && pair.baseline !== undefined,
+    )
     .sort((left, right) => left.block - right.block)
     .map((pair) => ({ ...pair, delta: pair.candidate - pair.baseline }));
 }
@@ -61,6 +78,8 @@ export function summarizeMetric(runs, scenarioId, metric) {
     baselineMedian: median(pairs.map((pair) => pair.baseline)),
     candidateMedian: median(pairs.map((pair) => pair.candidate)),
     pairedMedianDelta: median(deltas),
+    // These are the extrema actually observed in the twelve pairs. They are
+    // intentionally not labeled or interpreted as a confidence interval.
     minDelta: Math.min(...deltas),
     maxDelta: Math.max(...deltas),
     candidateHigherPairs: deltas.filter((delta) => delta > 0).length,
@@ -72,7 +91,10 @@ export function summarizeMetric(runs, scenarioId, metric) {
         const subset = pairs.filter((pair) => pair.order === order);
         return [
           order,
-          { pairs: subset.length, medianDelta: median(subset.map((pair) => pair.delta)) },
+          {
+            pairs: subset.length,
+            medianDelta: median(subset.map((pair) => pair.delta)),
+          },
         ];
       }),
     ),
@@ -89,6 +111,8 @@ export function summarizeConfirmatory(report) {
     "gapsOver50Ms",
   ];
   return {
+    // Preserve measurement scope beside the numbers so a detached summary
+    // cannot easily be mistaken for total page-start or decoder-only timing.
     measures: report.measures,
     candidate: report.variants.candidate.commit,
     baseline: report.variants.baseline.commit,
@@ -98,7 +122,10 @@ export function summarizeConfirmatory(report) {
         scenarioId,
         Object.fromEntries(
           ["publicReadyMs", ...responsivenessMetrics]
-            .map((metric) => [metric, summarizeMetric(report.runs, scenarioId, metric)])
+            .map((metric) => [
+              metric,
+              summarizeMetric(report.runs, scenarioId, metric),
+            ])
             .filter(([, summary]) => summary !== undefined),
         ),
       ]),
@@ -106,8 +133,12 @@ export function summarizeConfirmatory(report) {
   };
 }
 
-if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  const input = process.argv[2] ?? "Build/Performance/Decompression/confirmatory.json";
+if (
+  process.argv[1] &&
+  fileURLToPath(import.meta.url) === path.resolve(process.argv[1])
+) {
+  const input =
+    process.argv[2] ?? "Build/Performance/Decompression/confirmatory.json";
   const report = JSON.parse(await readFile(input, "utf8"));
   console.log(JSON.stringify(summarizeConfirmatory(report), null, 2));
 }

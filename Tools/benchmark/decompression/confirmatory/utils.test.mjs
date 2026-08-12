@@ -7,8 +7,8 @@ import {
   hashFiles,
   pairedOrders,
   parseConfirmatoryArguments,
-} from "./confirmatory-utils.mjs";
-import { safeFile } from "./confirmatory-server.mjs";
+} from "./utils.mjs";
+import { safeFile } from "./server.mjs";
 
 test("defaults the baseline to the PR merge base, not fork main", () => {
   assert.equal(defaultCandidateRef, "7e620929194becfe04c5ad019c030159cfe0aa34");
@@ -31,10 +31,13 @@ test("rebuilds both variants unless --skip-build is passed", () => {
 test("parses explicit variant refs without confusing them for paths", () => {
   const options = parseConfirmatoryArguments([
     "--candidate=/candidate",
-    "--baseline", "/baseline",
-    "--candidate-ref", "candidate-ref",
+    "--baseline",
+    "/baseline",
+    "--candidate-ref",
+    "candidate-ref",
     "--baseline-ref=baseline-ref",
-    "--port", "8100",
+    "--port",
+    "8100",
   ]);
   assert.equal(options.candidate, "/candidate");
   assert.equal(options.baseline, "/baseline");
@@ -59,8 +62,6 @@ test("interleaves twelve counterbalanced paired blocks so order is not confounde
     assert.notEqual(order[0], order[1]);
     assert.equal(typeof block, "number");
   }
-  // Each half of the run must contain both orders, so drift over elapsed time
-  // cannot land entirely on one variant.
   for (const half of [orders.slice(0, 6), orders.slice(6)]) {
     assert.equal(half.filter(({ order }) => order[0] === "candidate").length, 3);
     assert.equal(half.filter(({ order }) => order[0] === "baseline").length, 3);

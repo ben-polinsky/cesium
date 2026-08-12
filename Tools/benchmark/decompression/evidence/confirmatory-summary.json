@@ -1,0 +1,292 @@
+{
+  "measures": "First compressed-asset readiness after Cesium has loaded. The engine ESM import completes before the timer starts, so this is not total page cold-start: it excludes the candidate's smaller initial engine bundle as a possible offsetting benefit, and it charges the candidate for fetching its separate decoder worker during first asset use.",
+  "candidate": "7e620929194becfe04c5ad019c030159cfe0aa34",
+  "baseline": "6d5d8b1f0725b6f831b336463f4b11c98023427b",
+  "build": {
+    "command": "npx gulp build --minify --workspace @cesium/engine",
+    "removedBeforeBuild": [
+      "packages/engine/Build"
+    ],
+    "freshlyBuilt": true
+  },
+  "scenarios": {
+    "meshopt-model-unit-square": {
+      "publicReadyMs": {
+        "pairs": 12,
+        "baselineMedian": 52.24999999254942,
+        "candidateMedian": 75.6499999910593,
+        "pairedMedianDelta": 23.49999999254942,
+        "minDelta": 5.0999999940395355,
+        "maxDelta": 44.5,
+        "candidateHigherPairs": 12,
+        "candidateLowerPairs": 0,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": 24.19999998807907
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": 21.649999998509884
+          }
+        },
+        "deltas": [
+          44.5,
+          29.700000002980232,
+          28.099999994039536,
+          16.599999994039536,
+          19,
+          29.100000008940697,
+          30.600000008940697,
+          26.700000002980232,
+          20.299999982118607,
+          15.700000017881393,
+          15.800000011920929,
+          5.0999999940395355
+        ]
+      }
+    },
+    "meshopt-model-meshopt-cube-test": {
+      "publicReadyMs": {
+        "pairs": 12,
+        "baselineMedian": 73.85000000149012,
+        "candidateMedian": 97.50000000745058,
+        "pairedMedianDelta": 23.149999998509884,
+        "minDelta": 15.800000011920929,
+        "maxDelta": 29.899999991059303,
+        "candidateHigherPairs": 12,
+        "candidateLowerPairs": 0,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": 22.5
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": 24.100000001490116
+          }
+        },
+        "deltas": [
+          15.800000011920929,
+          29.5,
+          21.400000005960464,
+          25.5,
+          26.099999994039536,
+          22.700000002980232,
+          23.599999994039536,
+          29.899999991059303,
+          28.100000008940697,
+          22.099999979138374,
+          16.600000008940697,
+          22.100000008940697
+        ]
+      }
+    },
+    "spz-tiles-tower": {
+      "publicReadyMs": {
+        "pairs": 12,
+        "baselineMedian": 428.8999999985099,
+        "candidateMedian": 438.0000000074506,
+        "pairedMedianDelta": 10.700000010430813,
+        "minDelta": -13.599999994039536,
+        "maxDelta": 25.00000001490116,
+        "candidateHigherPairs": 10,
+        "candidateLowerPairs": 2,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": 9.800000004470348
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": 11.050000011920929
+          }
+        },
+        "deltas": [
+          16.600000008940697,
+          3.9000000059604645,
+          6.5,
+          -11.700000002980232,
+          7,
+          13.300000011920929,
+          -13.599999994039536,
+          8.800000011920929,
+          25.00000001490116,
+          13.700000002980232,
+          12.600000008940697,
+          22.5
+        ]
+      },
+      "maxFrameGapMs": {
+        "pairs": 12,
+        "baselineMedian": 233.35,
+        "candidateMedian": 91.6,
+        "pairedMedianDelta": -141.60000000000002,
+        "minDelta": -158.2,
+        "maxDelta": -132.29999999999995,
+        "candidateHigherPairs": 0,
+        "candidateLowerPairs": 12,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": -141.60000000000002
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": -145.1
+          }
+        },
+        "deltas": [
+          -141.7,
+          -158.2,
+          -142.90000000000003,
+          -149.3,
+          -133.39999999999998,
+          -133.39999999999998,
+          -150.2000000000001,
+          -140.89999999999998,
+          -141.50000000000006,
+          -140.80000000000007,
+          -132.29999999999995,
+          -150.50000000000006
+        ]
+      },
+      "p95FrameGapMs": {
+        "pairs": 12,
+        "baselineMedian": 9.249999999999893,
+        "candidateMedian": 9.199999999999985,
+        "pairedMedianDelta": -0.09499999999990916,
+        "minDelta": -0.19499999999993456,
+        "maxDelta": 0.06499999999982187,
+        "candidateHigherPairs": 1,
+        "candidateLowerPairs": 11,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": -0.09499999999991005
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": -0.059999999999831743
+          }
+        },
+        "deltas": [
+          -8.171241461241152e-14,
+          -3.730349362740526e-14,
+          -0.1400000000001036,
+          -0.09999999999990905,
+          -0.08999999999991104,
+          0.06499999999982187,
+          -0.009999999999784848,
+          -0.11999999999993882,
+          -0.09999999999990905,
+          -0.09999999999990727,
+          -0.19499999999993456,
+          -0.019999999999756213
+        ]
+      },
+      "longTaskCount": {
+        "pairs": 12,
+        "baselineMedian": 1,
+        "candidateMedian": 1,
+        "pairedMedianDelta": 0,
+        "minDelta": 0,
+        "maxDelta": 0,
+        "candidateHigherPairs": 0,
+        "candidateLowerPairs": 0,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": 0
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": 0
+          }
+        },
+        "deltas": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "longTaskDurationMs": {
+        "pairs": 12,
+        "baselineMedian": 91,
+        "candidateMedian": 89,
+        "pairedMedianDelta": -1.5,
+        "minDelta": -5,
+        "maxDelta": 2,
+        "candidateHigherPairs": 4,
+        "candidateLowerPairs": 7,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": 0.5
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": -3.5
+          }
+        },
+        "deltas": [
+          1,
+          -4,
+          1,
+          -4,
+          -1,
+          2,
+          -5,
+          -4,
+          1,
+          -2,
+          0,
+          -3
+        ]
+      },
+      "gapsOver50Ms": {
+        "pairs": 12,
+        "baselineMedian": 2,
+        "candidateMedian": 1,
+        "pairedMedianDelta": -1,
+        "minDelta": -1,
+        "maxDelta": -1,
+        "candidateHigherPairs": 0,
+        "candidateLowerPairs": 12,
+        "byOrder": {
+          "candidate-first": {
+            "pairs": 6,
+            "medianDelta": -1
+          },
+          "baseline-first": {
+            "pairs": 6,
+            "medianDelta": -1
+          }
+        },
+        "deltas": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      }
+    }
+  }
+}
