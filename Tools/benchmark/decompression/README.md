@@ -1,37 +1,36 @@
-# 14-asset decompression sweep
+# 14-asset decompression benchmark
 
-This is the unchanged runner that produced the 14-asset cold/warm matrix.
-The executable files match
-`bdp/issue-13617-performance-benchmarks-archive` byte-for-byte.
+Loads each asset in `scenarios.json` through its public Cesium API in a real
+Chromium browser and times how long it takes to reach that API's own "ready"
+condition (e.g. `model.ready`, `tileset.tilesLoaded`). No internal Cesium
+instrumentation - the clock starts at the public call and stops at the public
+readiness check.
 
 ## Review order
 
-1. `scenarios.json` — the 14 assets, public APIs, runtime files, and provenance.
-2. `run.mjs` — command-line options and Playwright invocation.
-3. `benchmark.spec.js` — sample lifecycle: 10 cold samples and 30 warm samples.
-4. `browserRunner.js` — the public Cesium loading call and readiness condition.
-5. `benchmark-utils.mjs` — validation, report metadata, sample ordering, and summaries.
-6. `compare.mjs` — baseline/candidate report comparison.
-7. `benchmark-utils.test.mjs` — the runner's focused checks.
+1. `scenarios.json` — the 14 assets: id, category, compression, API, and URL.
+2. `benchmark.html` + `browserRunner.js` — loads the asset via its public API
+   and returns the elapsed time.
+3. `benchmark.spec.js` — the Playwright test: for each scenario, runs 10 cold
+   samples (fresh Chromium process + profile each time) and 30 warm samples
+   (one shared browser context, warmed up once, then measured).
+4. `stats.mjs` — min/median/mean/p95 over the samples. Nothing fancier.
+5. `compare.mjs` — diffs the median duration of two reports.
 
 ## Run
 
 ```sh
-npm run benchmark-decompression:full
-npm run benchmark-decompression:full:compare -- \
-  baseline.json candidate.json
-npm run benchmark-decompression:full:test
+npm run benchmark-decompression
+npm run benchmark-decompression:compare -- baseline.json candidate.json
+npm run benchmark-decompression:test
 ```
 
-Cold samples use a fresh Chromium process and ephemeral profile. Warm samples
-load each asset once through the same public API, then retain that browser
-context for the measured samples. The timer starts at the public loader call
-and ends when that API's readiness condition is met.
+Useful flags for `benchmark-decompression`: `--scenario <id>` (repeatable),
+`--cold-iterations N`, `--warm-iterations N`, `--output <path>`, `--headed`.
+Run with `--help` for the full list.
 
 ## Re:Earth route
 
-`production-route/` is the separate Re:Earth route test. It does not change
-the 14-asset sweep.
-
-The archive branch retains raw captures, generators, and unrelated exploratory
-experiments; they are deliberately not part of this review surface.
+`reearth/` is a separate, unrelated test against the live Re:Earth production
+tileset, comparing two built Cesium worktrees (baseline vs. candidate). It
+does not affect the 14-asset sweep above.
